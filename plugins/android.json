@@ -9,6 +9,9 @@
     "installed_plugins": {
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "net.ddns.matthewpipie.BlockScheduleApp"
+        },
+        "cordova-sqlite-storage": {
+            "PACKAGE_NAME": "net.ddns.matthewpipie.BlockScheduleApp"
         }
     },
     "dependent_plugins": {}

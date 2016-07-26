@@ -17,32 +17,43 @@
  * under the License.
  */
 var app = {
-    // Application Constructor
-    initialize: function() {
-        this.bindEvents();
-    },
-    // Bind Event Listeners
-    //
-    // Bind any events that are required on startup. Common events are:
-    // 'load', 'deviceready', 'offline', and 'online'.
-    bindEvents: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, false);
-    },
-    // deviceready Event Handler
-    //
-    // The scope of 'this' is the event. In order to call the 'receivedEvent'
-    // function, we must explicitly call 'app.receivedEvent(...);'
-    onDeviceReady: function() {
-        app.receivedEvent('deviceready');
-    },
 
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
+	initialize: function() {
+		app.bindEvents();
+	},
 
-        console.log('Received Event: ' + id);
+	// Bind any events that are required on startup. Common events are:
+	// 'load', 'deviceready', 'offline', and 'online'.
+	bindEvents: function() {
+        document.addEventListener('deviceready', app.onDeviceReady, false);
+//		$(document).ready(app.onDeviceReady);
+		//$(document).one('pagebeforeshow', '.page', app.pagebeforeshow);
+		//$(document).one('deviceready', app.onDeviceReady);
+		$(document).one("pagecontainerbeforeshow", app.pagecontainerbeforeshow);
+	},
+	// deviceready Event Handler
+	//
+	// The scope of 'this' is the event. In order to call the 'receivedEvent'
+	// function, we must explicitly call 'app.receivedEvent(...);'
+	onDeviceReady: function() {
+		app.receivedEvent('deviceready');
 
-    }
+	},
+
+	pagecontainerbeforeshow: function() {
+		app.receivedEvent('pagecontainerbeforeshow');
+	},
+
+	// Update DOM on a Received Event
+	receivedEvent: function(id) {
+
+		addmenu[id]();
+		adddatebox[id]();
+		setUpStorage[id]();
+		//alert(id);
+
+	}
 };
-$(document).on('pagecreate', function() {
-    app.initialize();
-});
+
+app.initialize();
+

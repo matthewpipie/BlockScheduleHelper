@@ -17,40 +17,38 @@
  * under the License.
  */
 
-var mainpanel = "" +
+var addmenu = {
+	mainpanel: "" +
 "<h2 class='ui-header ui-bar-inherit'>Menu</h2>" +
 "<ul>" +
-    "<li id='schedule'>Schedule</li>" +
-    "<li id='editor'>Editor</li>" +
-    "<li id='settings'>Settings</li>" +
-"</ul>";
+	"<a href='index.html' data-ajax=false><li id='schedulelink'>Schedule</li></a>" +
+	"<a href='editor.html' data-ajax=false><li id='editorlink'>Editor</li></a>" +
+	"<a href='settings.html' data-ajax=false><li id='settingslink'>Settings</li></a>" +
+"</ul>",
 
-var button = "" +
+	button: "" +
 '<a href="#mainpanel" class="hamburger" data-inline="true" data-iconpos="notext" data-corners="false">' +
-    '<span class="hamburger-box">' +
-        '<span class="hamburger-inner"></span>' +
-    '</span>' +
-'</a>';
+	'<span class="hamburger-box">' +
+		'<span class="hamburger-inner"></span>' +
+	'</span>' +
+'</a>',
 
-$(document).one('pagebeforeshow', '[data-role="page"]', function(){
-    var site = $('#mainpanel').html();
-    $('#mainpanel').html(mainpanel);
-    $('#' + site).attr('id', 'selected');
-    $('[data-role="header"]').append(button);
+	pagecontainerbeforeshow: function() {
+		$('#mainpanel').html(addmenu.mainpanel);
+		$('[data-role="header"]').append(addmenu.button);
+	},
 
-});
+	deviceready: function() {
+		$('[data-role=page]').trigger('create');
+		$('#' + $('[data-role=page]').attr('id') + 'link').addClass('selected');
 
-$(document).one('deviceready', function() {
-
-    $('[data-role=page]').trigger('create');
-
-
-    $( document ).on( "swiperight", "[data-role=page]", function( e ) {
-    // We check if there is no open panel on the page because otherwise
-    // a swipe to close the left panel would also open the right panel (and v.v.).
-    // We do this by checking the data that the framework stores on the page element (panel: open).
-        if ( $.mobile.activePage.jqmData( "panel" ) !== "open" ) {
-            $( "#mainpanel" ).panel( "open" );
-        }
-    });
-});
+		$( document ).on( "swiperight", "[data-role=page]", function( e ) {
+		// We check if there is no open panel on the page because otherwise
+		// a swipe to close the left panel would also open the right panel (and v.v.).
+		// We do this by checking the data that the framework stores on the page element (panel: open).
+			if ( $.mobile.activePage.jqmData( "panel" ) !== "open" ) {
+				$( "#mainpanel" ).panel( "open" );
+			}
+		});
+	}
+};
