@@ -26,6 +26,9 @@ var testconstructor = function(id, className, starttime, endtime) {
 
 var adddatebox = {
 	sortedSchedule: "",
+	showWeekendAndDate: true,
+	hasSetDayCounter: false,
+	daycounter: 0,
 
 	datebox: '' +
 '<div id="datebox">' +
@@ -39,7 +42,17 @@ var adddatebox = {
 			setTimeout(adddatebox.waitUntilDateSet, 10);
 			return;
 		}
-		setTimeout(dateConverter.resetDateSet, 10);
+		setTimeout(dateConverter.resetDateSet, 11);
+
+		if (!adddatebox.hasSetDayCounter && !adddatebox.showWeekendAndDate) {
+			adddatebox.hasSetDayCounter = true;
+			localforage.getItem('currentDay').then(function(value) {
+				console.log('getting currentDay as ' + value);
+				dateConverter.currentDay = value;
+				adddatebox.changeCounter(value);
+			});
+			return;
+		}
 
 		localforage.getItem('dateformat').then(function(value) {
 			if (value == undefined) {
@@ -72,12 +85,14 @@ var adddatebox = {
 			}
 
 		});
+
 	},
 
 	updateDay: function(amt) {
 		if (amt === "") {
 			dateConverter.currentDate.setTime(new Date().getTime());
 		} else {
+			console.log('updating day');
 			for (var i = 0; i < Math.abs(amt); i++) {
 				if (Math.abs(amt) === amt) {
 					dateConverter.currentDate.setDate(dateConverter.currentDate.getDate() + 1);
@@ -86,6 +101,8 @@ var adddatebox = {
 				}
 			}
 		}
+
+		console.log(dateConverter.currentDate.getDate());
 
 		dateConverter.getDay();
 		adddatebox.waitUntilDateSet();
@@ -97,11 +114,11 @@ var adddatebox = {
 		$scheduletable.text("");
 		if (blockDay != null) {
 			for (var i = 0; i < adddatebox.sortedSchedule[blockDay].length; i++) {
-				$scheduletable.append("<tr><td>" +
+				$scheduletable.append("<tr id='row" + adddatebox.sortedSchedule[blockDay][i]['id'] + "'><td class='rowtime'>" +
 					adddatebox.sortedSchedule[blockDay][i]['starttime'] +
 					" - " +
 					adddatebox.sortedSchedule[blockDay][i]['endtime'] +
-					"</td><td>" +
+					"</td><td class='rowclass'>" +
 					adddatebox.sortedSchedule[blockDay][i]['className'] +
 					"</td></tr>");
 			}
@@ -143,9 +160,45 @@ var adddatebox = {
 		adddatebox.sortedSchedule = adddatebox.decompress(schedule);
 	},
 
-	setUpClicks() {
-		$('#leftbutton').click(function() {adddatebox.updateDay(-1);});
-		$('#rightbutton').click(function() {adddatebox.updateDay(1);});
+	changeCounter: function(direction) {
+		console.log('going ' + direction + "days");
+		adddatebox.removeClickies(adddatebox.daycounter);
+		localforage.getItem('daysperweek').then(function(value) {
+			if (value == undefined) {
+				localforage.setItem('daysperweek', 7);
+				value = 7;
+			}
+
+			adddatebox.daycounter += direction;
+			adddatebox.daycounter %= value;
+
+			if (adddatebox.daycounter < 0) {
+				adddatebox.daycounter += 7;
+			}
+
+			console.log(adddatebox.daycounter);
+
+			$("#date").text("Day " + parseInt(adddatebox.daycounter + 1).toString());
+			adddatebox.updateDateBox(adddatebox.daycounter);
+
+			adddatebox.updateClickies(adddatebox.daycounter);
+
+		});
+
+	},
+
+	gotClick: function(direction) {
+		if (adddatebox.showWeekendAndDate) {
+			adddatebox.updateDay(direction);
+		}
+		else {
+			adddatebox.changeCounter(direction);
+		}
+	},
+
+	setUpClicks: function() {
+		$('#leftbutton').click(function() {adddatebox.gotClick(-1);});
+		$('#rightbutton').click(function() {adddatebox.gotClick(1);});
 	},
 
 	pagecontainerbeforeshow: function() {
@@ -157,6 +210,27 @@ var adddatebox = {
 		adddatebox.scheduleCallback([[new testconstructor('0', 'math', '13:45', '13:46'), new testconstructor('1', 'english', '14:05', '19:05')], [new testconstructor('2', 'study hallo', '8:56', '12:45')]]);
 		adddatebox.updateDay(0);
 		adddatebox.setUpClicks();
+
+	},
+
+
+
+	//MANAGING CLICKS
+
+	removeClickies: function(dayofschoolweek) {
+		$('.rowclass').unbind('click');
+		$('.rowtime').unbind('click');
+	},
+
+	updateClickies: function(dayofschoolweek) {
+		$('.rowclass').click(function() {
+			for (var i = 0; i < adddatebox.sortedSchedule[dayofschoolweek].length; i++) {
+				if (adddatebox.sortedSchedule[dayofschoolweek][i]['id'] == $(this).parent().attr('id').substr(3)) {
+					alert(adddatebox.sortedSchedule[dayofschoolweek][i]);
+					console.log(adddatebox.sortedSchedule[dayofschoolweek][i]);
+				}
+			}
+		});
 	}
 
 }

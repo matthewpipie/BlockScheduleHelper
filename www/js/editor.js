@@ -34,7 +34,7 @@ var app = {
 		//$(document).one('deviceready', app.onDeviceReady);
 		$(document).one("pagecontainerbeforeshow", app.pagecontainerbeforeshow);
 
-		adddatebox.showWeekendAndDate = true;
+		adddatebox.showWeekendAndDate = false;
 
 	},
 	// deviceready Event Handler

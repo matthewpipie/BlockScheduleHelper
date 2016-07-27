@@ -19,17 +19,20 @@ var dateConverter = {
 				if (value == undefined) {
 					localforage.setItem('daysperweek', 7);
 					value = 7;
-					console.log("set daysperweek to default");
 				}
 
 				dateConverter.currentDay = dateConverter.calculateDay(value);
+				if (adddatebox.showWeekendAndDate) {
+									localforage.setItem('currentDay', dateConverter.currentDay);
+				console.log('setting currentDay as ' + dateConverter.currentDay);
+
+				}
 				dateConverter.dateSet = true;
 			});
 		});
 	},
 
 	setDateDay: function(date, day) {
-		console.log('setting ' + date + " to " + day);
 		if (typeof(date) == 'string') {
 			if (date === "") {
 				date = new Date();
@@ -72,7 +75,6 @@ var dateConverter = {
 			daysBetween += 7;
 		}
 
-		console.log(daysBetween);
 		return daysBetween;
 	},
 

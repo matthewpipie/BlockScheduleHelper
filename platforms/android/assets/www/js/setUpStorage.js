@@ -17,7 +17,7 @@ var setUpStorage = {
 			]);
 		}).then(function() {
 	  // this should alert "cordovaSQLiteDriver" when in an emulator or a device
-			alert(localforage.driver());
+			//alert(localforage.driver());
 			storage = true;
 		});
 	}

@@ -11,17 +11,14 @@ var dateConverter = {
 
 		localforage.getItem('dateday').then(function(value) {
 			if (value == undefined) {
-				alert('welpi');
 				value = dateConverter.setDateDay("", 0);
 			}
-			else {alert("IT WAS SET TO VALUE:" + value['date']);}
 			dateConverter.setDay = value['day'];
 			dateConverter.setDateO = new Date(value['date']);
 			localforage.getItem('daysperweek').then(function(value) {
 				if (value == undefined) {
 					localforage.setItem('daysperweek', 7);
 					value = 7;
-					console.log("set daysperweek to default");
 				}
 
 				dateConverter.currentDay = dateConverter.calculateDay(value);
@@ -31,7 +28,6 @@ var dateConverter = {
 	},
 
 	setDateDay: function(date, day) {
-		console.log('setting ' + date + " to " + day);
 		if (typeof(date) == 'string') {
 			if (date === "") {
 				date = new Date();
@@ -41,7 +37,7 @@ var dateConverter = {
 			}
 		}
 		var dateDay = {'date': date.toString(), 'day': day};
-		localforage.setItem('dateday', dateDay).then(function(val){alert(val['date']);});
+		localforage.setItem('dateday', dateDay);
 		return dateDay;
 	},
 
@@ -60,22 +56,20 @@ var dateConverter = {
 	},
 	
 	calculateDay: function(daysperweek) {
-
-		alert(dateConverter.setDateO + "WEWLAD" + dateConverter.dateToFind);
-
 		var daysBetween = 0;
 
 		if (dateConverter.setDateO <= dateConverter.dateToFind) { //set before datetofind, aka in the past
 			daysBetween = (dateConverter.getBusinessDatesCount(dateConverter.setDateO, dateConverter.dateToFind) - 1);
 		} else {
-			daysBetween = -(dateConverter.getBusinessDatesCount(dateConverter.dateToFind, dateConverter.setDateO) - 1);
+			daysBetween = -(dateConverter.getBusinessDatesCount(dateConverter.dateToFind, dateConverter.setDateO));
 		}
 
-				alert(dateConverter.setDateO + "WEWLAD" + dateConverter.dateToFind);
-
-
 		daysBetween %= daysperweek;
-		console.log(daysBetween);
+
+		if (daysBetween < 0) {
+			daysBetween += 7;
+		}
+
 		return daysBetween;
 	},
 
