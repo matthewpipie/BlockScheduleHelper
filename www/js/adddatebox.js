@@ -17,7 +17,15 @@
  * under the License.
  */
 
+var testconstructor = function(id, className, starttime, endtime) {
+	this.id = id;
+	this.className = className;
+	this.starttime = starttime;
+	this.endtime = endtime;
+};
+
 var adddatebox = {
+	sortedSchedule: "",
 
 	datebox: '' +
 '<div id="datebox">' +
@@ -26,17 +34,79 @@ var adddatebox = {
 	'<span id="rightbutton"><span id="bar3"></span><span id="bar4"></span></span>' +
 '</div>',
 
-	updateDateBox: function(sortedSchedule, blockDay) {
-		$scheduletable = $("#scheduletable");
-		for (var i = 0; i < sortedSchedule[blockDay].length; i++) {
-			$scheduletable.append("<tr><td>" +
-				sortedSchedule[blockDay][i]['starttime'] +
-				" - " +
-				sortedSchedule[blockDay][i]['endtime'] +
-				"</td><td>" +
-				sortedSchedule[blockDay][i]['class'] +
-				"</td></tr>");
+	waitUntilDateSet: function() {
+		if (!dateConverter.dateSet) {
+			setTimeout(adddatebox.waitUntilDateSet, 10);
+			return;
 		}
+		setTimeout(dateConverter.resetDateSet, 10);
+
+		localforage.getItem('dateformat').then(function(value) {
+			if (value == undefined) {
+				value = 0;
+				localforage.setItem('dateformat', value);
+			}
+			var formatteddate;
+			var month = (parseInt(dateConverter.currentDate.getMonth()) + 1).toString();
+			var day = dateConverter.currentDate.getDate();
+			var year = dateConverter.currentDate.getFullYear();
+			switch(value) {
+				case 1:
+					formatteddate = day + "/" + month + "/" + year;
+					break;
+				case 2:
+					formatteddate = year + "/" + month + "/" + day;
+					break;
+				default:
+					formatteddate = month + "/" + day + "/" + year;
+					break;
+			}
+
+			if (dateConverter.currentDate.getDay() == 0 || dateConverter.currentDate.getDay() == 6) {
+				$("#date").text("Weekend - " + formatteddate);
+				adddatebox.updateDateBox(null)
+			} else {
+				$("#date").text("Day " + parseInt(dateConverter.currentDay + 1).toString() + " - " + formatteddate);
+
+				adddatebox.updateDateBox(dateConverter.currentDay);
+			}
+
+		});
+	},
+
+	updateDay: function(amt) {
+		if (amt === "") {
+			dateConverter.currentDate.setTime(new Date().getTime());
+		} else {
+			for (var i = 0; i < Math.abs(amt); i++) {
+				if (Math.abs(amt) === amt) {
+					dateConverter.currentDate.setDate(dateConverter.currentDate.getDate() + 1);
+				} else {
+					dateConverter.currentDate.setDate(dateConverter.currentDate.getDate() - 1);
+				}
+			}
+		}
+
+		dateConverter.getDay();
+		adddatebox.waitUntilDateSet();
+
+	},
+
+	updateDateBox: function(blockDay) {
+		$scheduletable = $("#scheduletable");
+		$scheduletable.text("");
+		if (blockDay != null) {
+			for (var i = 0; i < adddatebox.sortedSchedule[blockDay].length; i++) {
+				$scheduletable.append("<tr><td>" +
+					adddatebox.sortedSchedule[blockDay][i]['starttime'] +
+					" - " +
+					adddatebox.sortedSchedule[blockDay][i]['endtime'] +
+					"</td><td>" +
+					adddatebox.sortedSchedule[blockDay][i]['className'] +
+					"</td></tr>");
+			}
+		}
+
 	},
 
 	decompress: function(infos) {
@@ -61,19 +131,21 @@ var adddatebox = {
 		return sortedinfos;
 	},
 
-	scheduleCallback: function(err, value) {
+	scheduleCallback: function(value) {
 		var schedule;
-		if (err != null) {
+		if (value == undefined) {
 			$('#content').append("Create a schedule by clicking on the menu icon!");
 			schedule = "";
 		} else {
 			schedule = value;
 		}
 
-		sortedSchedule = adddatebox.decompress(schedule);
+		adddatebox.sortedSchedule = adddatebox.decompress(schedule);
+	},
 
-		adddatebox.updateDateBox(sortedSchedule, 0);
-
+	setUpClicks() {
+		$('#leftbutton').click(function() {adddatebox.updateDay(-1);});
+		$('#rightbutton').click(function() {adddatebox.updateDay(1);});
 	},
 
 	pagecontainerbeforeshow: function() {
@@ -82,7 +154,9 @@ var adddatebox = {
 
 	deviceready: function() {
 		//localforage.getItem('schedule', adddatebox.scheduleCallback)
-		adddatebox.scheduleCallback(null, [[{'id': '0', 'class': 'Math', 'starttime': '13:45', 'endtime': '13:46'}, {'id': '1', 'class': 'Math2', 'starttime': '13:50', 'endtime': '13:55'}]])
+		adddatebox.scheduleCallback([[new testconstructor('0', 'math', '13:45', '13:46'), new testconstructor('1', 'english', '14:05', '19:05')], [new testconstructor('2', 'study hallo', '8:56', '12:45')]]);
+		adddatebox.updateDay(0);
+		adddatebox.setUpClicks();
 	}
 
 }

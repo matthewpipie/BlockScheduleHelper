@@ -21,9 +21,9 @@ var addmenu = {
 	mainpanel: "" +
 "<h2 class='ui-header ui-bar-inherit'>Menu</h2>" +
 "<ul>" +
-	"<a href='index.html' data-ajax=false><li id='schedule'>Schedule</li></a>" +
-	"<a href='editor.html' data-ajax=false><li id='editor'>Editor</li></a>" +
-	"<a href='settings.html' data-ajax=false><li id='settings'>Settings</li></a>" +
+	"<a href='index.html' data-ajax=false><li id='schedulelink'>Schedule</li></a>" +
+	"<a href='editor.html' data-ajax=false><li id='editorlink'>Editor</li></a>" +
+	"<a href='settings.html' data-ajax=false><li id='settingslink'>Settings</li></a>" +
 "</ul>",
 
 	button: "" +
@@ -34,16 +34,13 @@ var addmenu = {
 '</a>',
 
 	pagecontainerbeforeshow: function() {
-		addmenu.site = $('#mainpanel').html();
 		$('#mainpanel').html(addmenu.mainpanel);
 		$('[data-role="header"]').append(addmenu.button);
 	},
 
 	deviceready: function() {
 		$('[data-role=page]').trigger('create');
-
-		$('#' + addmenu.site).addClass('selected');
-		alert('i did it to #' + addmenu.site);
+		$('#' + $('[data-role=page]').attr('id') + 'link').addClass('selected');
 
 		$( document ).on( "swiperight", "[data-role=page]", function( e ) {
 		// We check if there is no open panel on the page because otherwise

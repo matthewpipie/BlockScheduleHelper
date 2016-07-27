@@ -26,6 +26,30 @@ var adddatebox = {
 	'<span id="rightbutton"><span id="bar3"></span><span id="bar4"></span></span>' +
 '</div>',
 
+	waitUntilDateSet: function() {
+		if (!dateConverter.dateSet) {
+			setTimeout(adddatebox.waitUntilDateSet, 100);
+			return;
+		}
+		setTimeout(dateConverter.resetDateSet, 100);
+		alert(dateConverter.currentDay);
+
+
+	},
+
+	updateDay: function(amt) {
+		for (var i = 0; i < Math.abs(amt); i++) {
+			if (Math.abs(amt) === amt) {
+				dateConverter.currentDate.setDate(dateConverter.currentDate.getDate() + 1);
+			} else {
+				dateConverter.currentDate.setDate(dateConverter.currentDate.getDate() - 1);
+			}
+		}
+		dateConverter.getDay();
+		adddatebox.waitUntilDateSet();
+
+	},
+
 	updateDateBox: function(sortedSchedule, blockDay) {
 		$scheduletable = $("#scheduletable");
 		for (var i = 0; i < sortedSchedule[blockDay].length; i++) {
@@ -82,7 +106,9 @@ var adddatebox = {
 
 	deviceready: function() {
 		//localforage.getItem('schedule', adddatebox.scheduleCallback)
-		adddatebox.scheduleCallback(null, [[{'id': '0', 'class': 'Math', 'starttime': '13:45', 'endtime': '13:46'}, {'id': '1', 'class': 'Math2', 'starttime': '13:50', 'endtime': '13:55'}]])
+		adddatebox.scheduleCallback(null, [[{'id': '0', 'class': 'Math', 'starttime': '13:45', 'endtime': '13:46'}, {'id': '1', 'class': 'Math2', 'starttime': '13:50', 'endtime': '13:55'}]]);
+		adddatebox.updateDay(0);
+		//adddatebox.setUpClicks();
 	}
 
 }

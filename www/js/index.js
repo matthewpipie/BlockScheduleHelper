@@ -25,8 +25,11 @@ var app = {
 	// Bind any events that are required on startup. Common events are:
 	// 'load', 'deviceready', 'offline', and 'online'.
 	bindEvents: function() {
- //       document.addEventListener('deviceready', app.onDeviceReady, false);
-		$(document).ready(app.onDeviceReady);
+		if (navigator.userAgent.indexOf("Android") != -1) {
+        	document.addEventListener('deviceready', app.onDeviceReady, false);
+		} else {
+			$(document).ready(app.onDeviceReady);
+		}
 		//$(document).one('pagebeforeshow', '.page', app.pagebeforeshow);
 		//$(document).one('deviceready', app.onDeviceReady);
 		$(document).one("pagecontainerbeforeshow", app.pagecontainerbeforeshow);
@@ -47,9 +50,10 @@ var app = {
 	// Update DOM on a Received Event
 	receivedEvent: function(id) {
 
-		addmenu[id]();
-		adddatebox[id]();
 		setUpStorage[id]();
+		addmenu[id]();
+		dateConverter[id]();
+		adddatebox[id]();
 		//alert(id);
 
 	}

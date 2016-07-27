@@ -1,5 +1,7 @@
 var setUpStorage = {
 
+	storage: false,
+
 	pagecontainerbeforeshow: function() {},
 
 	deviceready: function() {
@@ -16,6 +18,7 @@ var setUpStorage = {
 		}).then(function() {
 	  // this should alert "cordovaSQLiteDriver" when in an emulator or a device
 			alert(localforage.driver());
+			storage = true;
 		});
 	}
 };

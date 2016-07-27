@@ -49,9 +49,12 @@
 	<script type="text/javascript" src="./js/setUpStorage.js"></script>
 	<script type="text/javascript" src="./js/addmenu.js"></script>
 	<script type="text/javascript" src="./js/adddatebox.js"></script>
+	<script type="text/javascript" src="./js/dateConverter.js"></script>
 	<script type="text/javascript" src="./js/index.js"></script>
 	
 		<title>Hello World</title>
+
+
 
 </head>
 
@@ -59,7 +62,7 @@
 	<!-- page 1 -->
 		<div data-role="page" id="schedule" class="page">
 
-			<div data-role='panel' id='mainpanel' data-position-fixed='true' data-display='overlay'>schedule</div>
+			<div data-role='panel' id='mainpanel' data-position-fixed='true' data-display='overlay'></div>
 
 			<div data-role="header" id="header">
 				<h1>Block Schedule</h1>
@@ -74,6 +77,8 @@
 						</tr>
 					</tbody>
 				</table>
+				<input type="button" value="button text" id='testingpls' />
+				<input type="button" value="clear localforage" id='testingpls2' />
 			</div>
 
 		</div>    <!-- /page -->
