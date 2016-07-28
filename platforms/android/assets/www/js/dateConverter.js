@@ -22,6 +22,11 @@ var dateConverter = {
 				}
 
 				dateConverter.currentDay = dateConverter.calculateDay(value);
+				if (adddatebox.showWeekendAndDate) {
+									localforage.setItem('currentDay', dateConverter.currentDay);
+				console.log('setting currentDay as ' + dateConverter.currentDay);
+
+				}
 				dateConverter.dateSet = true;
 			});
 		});

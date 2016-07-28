@@ -46,8 +46,11 @@ var adddatebox = {
 
 		if (!adddatebox.hasSetDayCounter && !adddatebox.showWeekendAndDate) {
 			adddatebox.hasSetDayCounter = true;
-			adddatebox.daycounter = dateConverter.currentDay;
-			adddatebox.changeCounter(adddatebox.daycounter);
+			localforage.getItem('currentDay').then(function(value) {
+				console.log('getting currentDay as ' + value);
+				dateConverter.currentDay = value;
+				adddatebox.changeCounter(value);
+			});
 			return;
 		}
 
@@ -111,11 +114,11 @@ var adddatebox = {
 		$scheduletable.text("");
 		if (blockDay != null) {
 			for (var i = 0; i < adddatebox.sortedSchedule[blockDay].length; i++) {
-				$scheduletable.append("<tr><td>" +
+				$scheduletable.append("<tr id='row" + adddatebox.sortedSchedule[blockDay][i]['id'] + "'><td class='rowtime'>" +
 					adddatebox.sortedSchedule[blockDay][i]['starttime'] +
 					" - " +
 					adddatebox.sortedSchedule[blockDay][i]['endtime'] +
-					"</td><td>" +
+					"</td><td class='rowclass'>" +
 					adddatebox.sortedSchedule[blockDay][i]['className'] +
 					"</td></tr>");
 			}
@@ -158,6 +161,8 @@ var adddatebox = {
 	},
 
 	changeCounter: function(direction) {
+		console.log('going ' + direction + "days");
+		adddatebox.removeClickies(adddatebox.daycounter);
 		localforage.getItem('daysperweek').then(function(value) {
 			if (value == undefined) {
 				localforage.setItem('daysperweek', 7);
@@ -175,6 +180,8 @@ var adddatebox = {
 
 			$("#date").text("Day " + parseInt(adddatebox.daycounter + 1).toString());
 			adddatebox.updateDateBox(adddatebox.daycounter);
+
+			adddatebox.updateClickies(adddatebox.daycounter);
 
 		});
 
@@ -204,6 +211,28 @@ var adddatebox = {
 		adddatebox.updateDay(0);
 		adddatebox.setUpClicks();
 
+	},
+
+
+
+	//MANAGING CLICKS
+
+	removeClickies: function(dayofschoolweek) {
+		$('.rowclass').unbind('click');
+		$('.rowtime').unbind('click');
+	},
+
+	updateClickies: function(dayofschoolweek) {
+		alert('wew');
+		$('.rowclass').click(function() {
+			alert('lad');
+			for (var i = 0; i < adddatebox.sortedSchedule[dayofschoolweek].length; i++) {
+				if (adddatebox.sortedSchedule[dayofschoolweek][i]['id'] == $(this).parent().attr('id').substr(3)) {
+					alert(adddatebox.sortedSchedule[dayofschoolweek][i]);
+					console.log(adddatebox.sortedSchedule[dayofschoolweek][i]);
+				}
+			}
+		});
 	}
 
 }

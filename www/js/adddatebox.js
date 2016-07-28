@@ -114,11 +114,11 @@ var adddatebox = {
 		$scheduletable.text("");
 		if (blockDay != null) {
 			for (var i = 0; i < adddatebox.sortedSchedule[blockDay].length; i++) {
-				$scheduletable.append("<tr id='row" + adddatebox.sortedSchedule[blockDay][i]['id'] + "'><td class='rowtime'>" +
+				$scheduletable.append("<tr href='#popupid'" + adddatebox.sortedSchedule[blockDay][i]['id'] + " data-rel='popup' data-transition='fade' class='rowid' id='row" + adddatebox.sortedSchedule[blockDay][i]['id'] + "'><td>" +
 					adddatebox.sortedSchedule[blockDay][i]['starttime'] +
 					" - " +
 					adddatebox.sortedSchedule[blockDay][i]['endtime'] +
-					"</td><td class='rowclass'>" +
+					"</td><td>" +
 					adddatebox.sortedSchedule[blockDay][i]['className'] +
 					"</td></tr>");
 			}
@@ -213,21 +213,30 @@ var adddatebox = {
 
 	},
 
+	//EDITING
+
+	addSchoolClass: function(dayofschoolweek) { //generate blank class with id
+		
+	},
+
+	editSchoolClass: function(schoolClass, dayofschoolweek, classPos) {
+
+	},
 
 
 	//MANAGING CLICKS
 
 	removeClickies: function(dayofschoolweek) {
-		$('.rowclass').unbind('click');
-		$('.rowtime').unbind('click');
+		$('.rowid').unbind('click');
 	},
 
 	updateClickies: function(dayofschoolweek) {
-		$('.rowclass').click(function() {
+		$('.rowid').click(function() {
 			for (var i = 0; i < adddatebox.sortedSchedule[dayofschoolweek].length; i++) {
-				if (adddatebox.sortedSchedule[dayofschoolweek][i]['id'] == $(this).parent().attr('id').substr(3)) {
+				if (adddatebox.sortedSchedule[dayofschoolweek][i]['id'] == $(this).attr('id').substr(3)) {
 					alert(adddatebox.sortedSchedule[dayofschoolweek][i]);
 					console.log(adddatebox.sortedSchedule[dayofschoolweek][i]);
+					editSchoolClass(adddatebox.sortedSchedule[dayofschoolweek][i], dayofschoolweek, i);
 				}
 			}
 		});
