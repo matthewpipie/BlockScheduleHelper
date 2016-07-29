@@ -73,7 +73,12 @@
 					Room #: <input type="text" id="formroom" />
 					Break: <input type="checkbox" data-role="flipswitch" id="formbreak" data-on-text="Yes" data-off-text="No" />
 					Global: <input type="checkbox" data-role="flipswitch" id="formglobal" data-on-text="Yes" data-off-text="No" />
-					<input id="formsubmit" type="button" value="Save" />
+					<fieldset class="ui-grid-a">
+						<div class="ui-block-a"><input id="formcancel" type="button" value="Cancel" /></div>
+						<div class="ui-block-b"><input id="formsubmit" type="button" value="Save" /></div>
+					</fieldset>
+					<input id="formremove" type="button" value="Remove" />
+					
 				</form>
 			</div>
 
@@ -85,9 +90,7 @@
 				<table>
 					<tbody id='scheduletable'></tbody>
 				</table>
-				<button id="testingpls2">pls</button>
 				<div class="plusbuttonholder"><span class="plusbutton">+</span></div>
-
 				
 			</div>
 

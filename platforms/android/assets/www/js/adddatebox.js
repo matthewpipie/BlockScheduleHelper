@@ -211,7 +211,10 @@ var adddatebox = {
 		$('#leftbutton').click(function() {adddatebox.gotClick(-1);});
 		$('#rightbutton').click(function() {adddatebox.gotClick(1);});
 		$('#formsubmit').click(function(ev) {ev.preventDefault(); adddatebox.handleSubmit()});
+		$('#formcancel').click(function(ev) {ev.preventDefault(); $('#openpopup').popup('close');});
 		$('.plusbuttonholder').click(function() {adddatebox.addSchoolClass(adddatebox.daycounter)})
+		$('#formname').click(function() {$(this).select();});
+		$('#formroom').click(function() {$(this).select();});
 	},
 
 	pagecontainerbeforeshow: function() {

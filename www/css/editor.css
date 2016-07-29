@@ -72,3 +72,25 @@ td:nth-child(odd) {
 #content {
 	height: 90%;
 }
+
+fieldset > div:first-child > div.ui-btn.ui-input-btn.ui-corner-all.ui-shadow {
+	margin-left: 0 !important;
+	margin-right: 1%;
+}
+fieldset > div:last-child > div.ui-btn.ui-input-btn.ui-corner-all.ui-shadow {
+	margin-right: 0 !important;
+	margin-left: 1%;
+}
+.ui-btn-active {
+	background-color: #f6f6f6 !important;
+	border-color: #ddd !important;
+	color: rgb(51, 51, 51) !important;
+	text-shadow: rgb(243, 243, 243) 0px 1px 0px !important;
+}
+#formremove {
+	background-color: red;
+    opacity: .4;
+}
+.break td {
+	background: #defff3 !important;
+}
