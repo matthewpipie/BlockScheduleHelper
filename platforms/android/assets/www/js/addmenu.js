@@ -41,14 +41,19 @@ var addmenu = {
 	deviceready: function() {
 		$('[data-role=page]').trigger('create');
 		$('#' + $('[data-role=page]').attr('id') + 'link').addClass('selected');
+		addmenu.enableSwipe();
+	},
 
+	enableSwipe: function() {
 		$( document ).on( "swiperight", "[data-role=page]", function( e ) {
 		// We check if there is no open panel on the page because otherwise
 		// a swipe to close the left panel would also open the right panel (and v.v.).
 		// We do this by checking the data that the framework stores on the page element (panel: open).
-			if ( $.mobile.activePage.jqmData( "panel" ) !== "open" ) {
+			if ( $.mobile.activePage.jqmData( "panel" ) !== "open" && $('.in').length == 0) {
 				$( "#mainpanel" ).panel( "open" );
 			}
 		});
+		console.log('swipe enabled');
 	}
+
 };

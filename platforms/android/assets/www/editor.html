@@ -42,7 +42,7 @@
 
 
 		<script type="text/javascript" src="cordova.js"></script>
-		<script type="text/javascript" src="./deps/jQuery/jquery-2.2.4.min.js"></script>
+		<script type="text/javascript" src="./deps/jQuery/jquery-2.1.4.min.js"></script>
 		<script type="text/javascript" src="./deps/jQuery-mobile/jquery.mobile-1.4.5.min.js"></script>
 		<script src="./deps/localForage/localforage.min.js"></script>
 		<script src="./deps/localForage/localforage-cordovasqlitedriver.js"></script>
@@ -64,19 +64,31 @@
 
 			<div data-role='panel' id='mainpanel' data-position-fixed='true' data-display='overlay'></div>
 
+			<div data-role="popup" id="openpopup" class="ui-content" data-theme="a">
+				<form>
+					<div tabindex="1"></div>
+					Name: <input type="text" id="formname" />
+					Start Time: <input type="time" id="formstarttime" />
+					End Time: <input type="time" id="formendtime" />
+					Room #: <input type="text" id="formroom" />
+					Break: <input type="checkbox" data-role="flipswitch" id="formbreak" data-on-text="Yes" data-off-text="No" />
+					Global: <input type="checkbox" data-role="flipswitch" id="formglobal" data-on-text="Yes" data-off-text="No" />
+					<input id="formsubmit" type="button" value="Save" />
+				</form>
+			</div>
+
 			<div data-role="header" id="header">
 				<h1>Editor</h1>
 			</div>
 
 			<div data-role="content" id="content">
 				<table>
-					<tbody id='scheduletable'>
-						<tr>
-							<th>Time</th>
-							<th>Class</th>
-						</tr>
-					</tbody>
+					<tbody id='scheduletable'></tbody>
 				</table>
+				<button id="testingpls2">pls</button>
+				<div class="plusbuttonholder"><span class="plusbutton">+</span></div>
+
+				
 			</div>
 
 		</div>    <!-- /page -->

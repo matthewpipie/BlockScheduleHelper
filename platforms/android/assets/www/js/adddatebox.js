@@ -1,3 +1,4 @@
+"use strict";
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,11 +18,13 @@
  * under the License.
  */
 
-var testconstructor = function(id, className, starttime, endtime) {
+var testconstructor = function(id, className, starttime, endtime, isBreak, isGlobal) {
 	this.id = id;
 	this.className = className;
 	this.starttime = starttime;
 	this.endtime = endtime;
+	this.isBreak = isBreak;
+	this.isGlobal = isGlobal;
 };
 
 var adddatebox = {
@@ -29,6 +32,7 @@ var adddatebox = {
 	showWeekendAndDate: true,
 	hasSetDayCounter: false,
 	daycounter: 0,
+	currentlyEditing: {},
 
 	datebox: '' +
 '<div id="datebox">' +
@@ -47,7 +51,6 @@ var adddatebox = {
 		if (!adddatebox.hasSetDayCounter && !adddatebox.showWeekendAndDate) {
 			adddatebox.hasSetDayCounter = true;
 			localforage.getItem('currentDay').then(function(value) {
-				console.log('getting currentDay as ' + value);
 				dateConverter.currentDay = value;
 				adddatebox.changeCounter(value);
 			});
@@ -92,7 +95,6 @@ var adddatebox = {
 		if (amt === "") {
 			dateConverter.currentDate.setTime(new Date().getTime());
 		} else {
-			console.log('updating day');
 			for (var i = 0; i < Math.abs(amt); i++) {
 				if (Math.abs(amt) === amt) {
 					dateConverter.currentDate.setDate(dateConverter.currentDate.getDate() + 1);
@@ -102,31 +104,30 @@ var adddatebox = {
 			}
 		}
 
-		console.log(dateConverter.currentDate.getDate());
-
 		dateConverter.getDay();
 		adddatebox.waitUntilDateSet();
 
 	},
 
 	updateDateBox: function(blockDay) {
-		$scheduletable = $("#scheduletable");
-		$scheduletable.text("");
-		if (blockDay != null) {
+		var $scheduletable = $("#scheduletable");
+		$scheduletable.html("<tr><th>Time</th><th>Class</th></tr>");
+		if (blockDay != null && adddatebox.sortedSchedule[blockDay] != null) {
 			for (var i = 0; i < adddatebox.sortedSchedule[blockDay].length; i++) {
-				$scheduletable.append("<tr id='row" + adddatebox.sortedSchedule[blockDay][i]['id'] + "'><td class='rowtime'>" +
+				$scheduletable.append("<tr class='rowid" + (adddatebox.sortedSchedule[blockDay][i]['isBreak'] ? " break" : "") + "' id='row" + adddatebox.sortedSchedule[blockDay][i]['id'] + "'><td>" +
 					adddatebox.sortedSchedule[blockDay][i]['starttime'] +
 					" - " +
 					adddatebox.sortedSchedule[blockDay][i]['endtime'] +
-					"</td><td class='rowclass'>" +
+					"</td><td>" +
 					adddatebox.sortedSchedule[blockDay][i]['className'] +
-					"</td></tr>");
+					" (" +
+					adddatebox.sortedSchedule[blockDay][i]['room'] +
+					")</td></tr>");
 			}
 		}
-
 	},
 
-	decompress: function(infos) {
+	decompress: function(infos, infos2) {
 		var sortedinfos = [];
 		for (var i = 0; i < infos.length; i++) {
 			var temp = [];
@@ -134,34 +135,46 @@ var adddatebox = {
 				var temptime = infos[i][j]['starttime'].split(":");
 				temp.push({'id': infos[i][j]['id'], 'starttime': parseInt(temptime[0] * 60 + temptime[1])});
 			}
+			for (var l = 0; l < infos2.length; l++) {
+				var temptime = infos2[l]['starttime'].split(":");
+				temp.push({'id': infos2[l]['id'], 'starttime': parseInt(temptime[0] * 60 + temptime[1])});
+			}
+
 			var sortedinfo = [];
 
 			temp.sort(function(a, b) {return parseInt(a['starttime'], 10) - parseInt(b['starttime'], 10);})
 
 			for (var k = 0; k < temp.length; k++) {
-				sortedinfo.push(infos[i].filter(function(obj) {return obj.id == temp[k]['id'];})[0]);
-				
+				var filter1 = infos[i].filter(function(obj) {return obj.id == temp[k]['id'];})[0];
+				var filter2 = infos2.filter(function(obj) {return obj.id == temp[k]['id'];})[0];
+				if (filter1 != undefined) {
+					sortedinfo.push(filter1);
+				}
+				if (filter2 != undefined) {
+					sortedinfo.push(filter2);
+				}
 			}
 			sortedinfos[i] = sortedinfo;
 		}
-
+		console.log(sortedinfos);
 		return sortedinfos;
 	},
 
-	scheduleCallback: function(value) {
-		var schedule;
+	scheduleCallback: function(value, value2) {
 		if (value == undefined) {
 			$('#content').append("Create a schedule by clicking on the menu icon!");
-			schedule = "";
-		} else {
-			schedule = value;
+			value = [];
+			localforage.setItem('schedule', value);
+		}
+		if (value2 == undefined) {
+			value2 = [];
+			localforage.setItem('globalSchedule', value2);
 		}
 
-		adddatebox.sortedSchedule = adddatebox.decompress(schedule);
+		adddatebox.sortedSchedule = adddatebox.decompress(value, value2);
 	},
 
 	changeCounter: function(direction) {
-		console.log('going ' + direction + "days");
 		adddatebox.removeClickies(adddatebox.daycounter);
 		localforage.getItem('daysperweek').then(function(value) {
 			if (value == undefined) {
@@ -175,8 +188,6 @@ var adddatebox = {
 			if (adddatebox.daycounter < 0) {
 				adddatebox.daycounter += 7;
 			}
-
-			console.log(adddatebox.daycounter);
 
 			$("#date").text("Day " + parseInt(adddatebox.daycounter + 1).toString());
 			adddatebox.updateDateBox(adddatebox.daycounter);
@@ -199,40 +210,165 @@ var adddatebox = {
 	setUpClicks: function() {
 		$('#leftbutton').click(function() {adddatebox.gotClick(-1);});
 		$('#rightbutton').click(function() {adddatebox.gotClick(1);});
+		$('#formsubmit').click(function(ev) {ev.preventDefault(); adddatebox.handleSubmit()});
+		$('.plusbuttonholder').click(function() {adddatebox.addSchoolClass(adddatebox.daycounter)})
 	},
 
 	pagecontainerbeforeshow: function() {
-		$('#content').prepend(adddatebox.datebox);
-	},
+	$('#content').prepend(adddatebox.datebox); },
 
 	deviceready: function() {
-		//localforage.getItem('schedule', adddatebox.scheduleCallback)
-		adddatebox.scheduleCallback([[new testconstructor('0', 'math', '13:45', '13:46'), new testconstructor('1', 'english', '14:05', '19:05')], [new testconstructor('2', 'study hallo', '8:56', '12:45')]]);
+		localforage.getItem('schedule').then(function(value) {
+			localforage.getItem('globalSchedule').then(function(value2) {
+				adddatebox.scheduleCallback(value, value2);
+			});
+		});
+		//adddatebox.scheduleCallback([[new testconstructor('0', 'math', '13:45', '13:46', false, false), new testconstructor('1', 'english', '14:05', '19:05', true, false)], [new testconstructor('2', 'study hallo', '8:56', '12:45', false, false)]], [new testconstructor('3', 'globaltest', '13:45', '21:43', false, true)]);
 		adddatebox.updateDay(0);
 		adddatebox.setUpClicks();
 
 	},
 
+	//EDITING
+
+	addSchoolClass: function(dayofschoolweek) { //generate blank class with id
+		//make sure to store into localforage at the end, then call editschoolclass()
+
+		//find highest id rn
+		var highest = -1;
+		for (var i = 0; i < adddatebox.sortedSchedule.length; i++) {
+			for (var j = 0; j < adddatebox.sortedSchedule[i].length; j++) {
+				if (parseInt(adddatebox.sortedSchedule[i][j]['id']) > highest) {
+					highest = parseInt(adddatebox.sortedSchedule[i][j]['id']);
+				}
+			}
+		}
+		var tempSchoolClass = {'className': "New Class", 'starttime': "00:00", 'endtime': "00:00", 'id': (highest + 1).toString(), 'isBreak': false, 'isGlobal': false, 'room': "R1"};
+		adddatebox.editSchoolClass(tempSchoolClass, dayofschoolweek, true)
+
+	},
+
+	editSchoolClass: function(schoolClass, dayofschoolweek, isNew) {
+		//edit popup
+		//set up submit button (maybe in setbinds) to set it in storage
+		$('#formname').val(schoolClass['className']);
+		if (schoolClass['starttime'].length == 4) {
+			schoolClass['starttime'] = "0" + schoolClass['starttime'];
+		}
+		$('#formstarttime').val(schoolClass['starttime']);
+		
+		if (schoolClass['endtime'].length == 4) {
+			schoolClass['endtime'] = "0" + schoolClass['endtime'];
+		}
+		$('#formendtime').val(schoolClass['endtime']);
+
+		if (schoolClass['isBreak']) {
+			$('#formbreak')[0].checked = true;
+			$("#formbreak").flipswitch("refresh");
+		} else {
+			$('#formbreak')[0].checked = false;
+			$("#formbreak").flipswitch("refresh");
+		}
+		if (schoolClass['isGlobal']) {
+			$('#formglobal')[0].checked = true;
+			$("#formglobal").flipswitch("refresh");
+		} else {
+			$('#formglobal')[0].checked = false;
+			$("#formglobal").flipswitch("refresh");
+		}
+		$("#formroom").val(schoolClass['room']);
+
+		adddatebox.currentlyEditing = {'schoolClass': schoolClass, 'dayofschoolweek': dayofschoolweek, 'isNew': isNew};;
+		console.log(adddatebox.currentlyEditing);
+
+		$('#openpopup').popup('open');
+	},
 
 
 	//MANAGING CLICKS
 
 	removeClickies: function(dayofschoolweek) {
-		$('.rowclass').unbind('click');
-		$('.rowtime').unbind('click');
+		$('.rowid').unbind('click');
 	},
 
 	updateClickies: function(dayofschoolweek) {
-		alert('wew');
-		$('.rowclass').click(function() {
-			alert('lad');
+		$('.rowid').click(function() {
 			for (var i = 0; i < adddatebox.sortedSchedule[dayofschoolweek].length; i++) {
-				if (adddatebox.sortedSchedule[dayofschoolweek][i]['id'] == $(this).parent().attr('id').substr(3)) {
-					alert(adddatebox.sortedSchedule[dayofschoolweek][i]);
-					console.log(adddatebox.sortedSchedule[dayofschoolweek][i]);
+				if (typeof($(this).attr('id')) == "string") {
+					if (adddatebox.sortedSchedule[dayofschoolweek][i]['id'] == $(this).attr('id').substr(3)) {
+						adddatebox.editSchoolClass(adddatebox.sortedSchedule[dayofschoolweek][i], dayofschoolweek, false);
+					}
 				}
 			}
 		});
+	},
+
+	handleSubmit: function() {
+		$('#openpopup').popup('close');
+
+		if ($('#formstarttime').val() == "" || $('#formendtime').val() == "") {
+
+			navigator.notification.alert("Error in saving data.  Did you fill out all forms?", null, "Error", "OK");
+			return;
+		}
+
+		localforage.getItem('schedule').then(function(unmodSchedule) {
+			localforage.getItem('globalSchedule').then(function(unmodGlobalSchedule) {
+
+				if (unmodSchedule == undefined) {
+					console.log(unmodSchedule);
+					localforage.setItem('schedule', []);
+					unmodSchedule = [];
+				}
+				if (unmodGlobalSchedule == undefined) {
+					localforage.setItem('globalSchedule', []);
+					unmodGlobalSchedule = [];
+				}
+				if (unmodSchedule[adddatebox.currentlyEditing['dayofschoolweek']] == undefined) {
+					unmodSchedule[adddatebox.currentlyEditing['dayofschoolweek']] = [];
+				}
+				if (adddatebox.currentlyEditing['isNew']) {
+					unmodSchedule[adddatebox.currentlyEditing['dayofschoolweek']].push(adddatebox.currentlyEditing['schoolClass'])
+				}
+
+				var correctClass = adddatebox.currentlyEditing['schoolClass'];
+				correctClass['className'] = $("#formname").val();
+				correctClass['starttime'] = $("#formstarttime").val();
+				correctClass['endtime'] = $("#formendtime").val();
+				correctClass['isBreak'] = $('#formbreak')[0].checked;
+				correctClass['isGlobal'] = $('#formglobal')[0].checked;
+
+				if (correctClass['isGlobal'] && !adddatebox.currentlyEditing['schoolClass']['isGlobal']) {
+					//USER MADE IT GLOBAL
+					//pop old one using filter
+
+				} else if (!correctClass['isGlobal'] && adddatebox.currentlyEditing['schoolClass']['isGlobal']) {
+					//USER MADE IT NON-GLOBAL
+				} else if (correctClass['isGlobal'] && adddatebox.currentlyEditing['schoolClass']['isGlobal']) {
+					//WAS STILL GLOBAL
+				} else {
+					//STILL NOT GLOBAL
+					var i;
+					console.log(unmodSchedule);
+					console.log(adddatebox.currentlyEditing['dayofschoolweek']);
+					console.log(unmodSchedule[adddatebox.currentlyEditing['dayofschoolweek']]);
+					for (i = 0; i < unmodSchedule[adddatebox.currentlyEditing['dayofschoolweek']].length; i++) {
+						if (unmodSchedule[adddatebox.currentlyEditing['dayofschoolweek']][i]['id'] == correctClass['id']) {
+							break;
+						}
+					}
+
+					unmodSchedule[adddatebox.currentlyEditing['dayofschoolweek']][i] = correctClass;
+
+					localforage.setItem('schedule', unmodSchedule).then(function(val) {
+						adddatebox.scheduleCallback(val, unmodGlobalSchedule);
+						adddatebox.changeCounter(0);
+					})
+				}
+			});
+		});
+
+		//edit object, store back into localforage, re-decompress and refresh display
 	}
 
 }

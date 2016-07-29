@@ -33,9 +33,6 @@ var app = {
 		//$(document).one('pagebeforeshow', '.page', app.pagebeforeshow);
 		//$(document).one('deviceready', app.onDeviceReady);
 		$(document).one("pagecontainerbeforeshow", app.pagecontainerbeforeshow);
-
-		adddatebox.showWeekendAndDate = true;
-
 	},
 	// deviceready Event Handler
 	//
@@ -43,6 +40,10 @@ var app = {
 	// function, we must explicitly call 'app.receivedEvent(...);'
 	onDeviceReady: function() {
 		app.receivedEvent('deviceready');
+
+		$('#testingpls2').click(function() {
+			localforage.clear();
+		});
 
 	},
 
@@ -57,7 +58,7 @@ var app = {
 		addmenu[id]();
 		dateConverter[id]();
 		adddatebox[id]();
-		//alert(id);
+		alert(id);
 
 	}
 };

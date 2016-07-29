@@ -25,4 +25,5 @@
     <engine name="android" spec="~5.2.1" />
     <plugin name="cordova-plugin-whitelist" spec="1" />
     <plugin name="cordova-sqlite-storage" spec="https://github.com/litehelpers/Cordova-sqlite-storage.git" />
+    <plugin name="cordova-plugin-dialogs" spec="~1.2.1" />
 </widget>

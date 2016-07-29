@@ -15,6 +15,10 @@
                         {
                             "xml": "<feature name=\"SQLitePlugin\"><param name=\"android-package\" value=\"io.sqlc.SQLitePlugin\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Notification\"><param name=\"android-package\" value=\"org.apache.cordova.dialogs.Notification\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -27,6 +31,9 @@
         },
         "cordova-sqlite-storage": {
             "PACKAGE_NAME": "net.ddns.matthewpipie.BlockScheduleApp"
+        },
+        "cordova-plugin-dialogs": {
+            "PACKAGE_NAME": "net.ddns.matthewpipie.BlockScheduleApp"
         }
     },
     "dependent_plugins": {},
@@ -38,10 +45,27 @@
             "clobbers": [
                 "SQLitePlugin"
             ]
+        },
+        {
+            "id": "cordova-plugin-dialogs.notification",
+            "file": "plugins/cordova-plugin-dialogs/www/notification.js",
+            "pluginId": "cordova-plugin-dialogs",
+            "merges": [
+                "navigator.notification"
+            ]
+        },
+        {
+            "id": "cordova-plugin-dialogs.notification_android",
+            "file": "plugins/cordova-plugin-dialogs/www/android/notification.js",
+            "pluginId": "cordova-plugin-dialogs",
+            "merges": [
+                "navigator.notification"
+            ]
         }
     ],
     "plugin_metadata": {
         "cordova-plugin-whitelist": "1.2.2",
-        "cordova-sqlite-storage": "1.4.6-pre5"
+        "cordova-sqlite-storage": "1.4.6-pre5",
+        "cordova-plugin-dialogs": "1.2.1"
     }
 }

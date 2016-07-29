@@ -53,3 +53,22 @@ td:nth-child(odd) {
 	padding-right: 4%;
 	padding-left: 4%;
 }
+
+.plusbutton {
+    text-align: center;
+    display: block;
+    font-size: 4em;
+    opacity: .85;
+}
+
+.plusbuttonholder {
+	width: 100%;
+	height: 90%;
+	display: block;
+}
+#editor {
+	height: 100%;
+}
+#content {
+	height: 90%;
+}
