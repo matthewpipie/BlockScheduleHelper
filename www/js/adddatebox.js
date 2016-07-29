@@ -114,7 +114,7 @@ var adddatebox = {
 		$scheduletable.text("");
 		if (blockDay != null) {
 			for (var i = 0; i < adddatebox.sortedSchedule[blockDay].length; i++) {
-				$scheduletable.append("<tr href='#popupid'" + adddatebox.sortedSchedule[blockDay][i]['id'] + " data-rel='popup' data-transition='fade' class='rowid' id='row" + adddatebox.sortedSchedule[blockDay][i]['id'] + "'><td>" +
+				$scheduletable.append("<tr href='#openpopup' data-rel='popup' data-transition='fade' class='rowid' id='row" + adddatebox.sortedSchedule[blockDay][i]['id'] + "'><td>" +
 					adddatebox.sortedSchedule[blockDay][i]['starttime'] +
 					" - " +
 					adddatebox.sortedSchedule[blockDay][i]['endtime'] +
@@ -149,15 +149,12 @@ var adddatebox = {
 	},
 
 	scheduleCallback: function(value) {
-		var schedule;
 		if (value == undefined) {
 			$('#content').append("Create a schedule by clicking on the menu icon!");
-			schedule = "";
-		} else {
-			schedule = value;
+			value = "";
 		}
 
-		adddatebox.sortedSchedule = adddatebox.decompress(schedule);
+		adddatebox.sortedSchedule = adddatebox.decompress(value);
 	},
 
 	changeCounter: function(direction) {
@@ -220,7 +217,8 @@ var adddatebox = {
 	},
 
 	editSchoolClass: function(schoolClass, dayofschoolweek, classPos) {
-
+		//edit popup
+		//set up submit button (maybe in setbinds) to set it in storage
 	},
 
 
