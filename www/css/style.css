@@ -4,6 +4,9 @@ body {
 	-webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
 	-webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
 	background-color:#E4E4E4;
+	-webkit-transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+
 }
 
 #header h1 {

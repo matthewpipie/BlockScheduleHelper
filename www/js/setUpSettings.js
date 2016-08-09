@@ -7,9 +7,9 @@ var setUpSettings = {
 	ready: false,
 
 	pagecontainerbeforeshow: function() {
-		setUpSettings.loadSettings();
 	},
 	deviceready: function() {
+		setUpSettings.loadSettings();
 		setUpSettings.updateSettings();
 		$('#formsubmit').click(function(ev) {ev.preventDefault(); setUpSettings.handleSubmit()});
 		$('#formdays').change(setUpSettings.verifyDay);
@@ -22,15 +22,16 @@ var setUpSettings = {
 			setTimeout(setUpSettings.updateSettings, 10);
 			return;
 		}
-		$("#formtime")[0].checked = twelveHourTime;
+		$("#formtime")[0].checked = setUpSettings.twelveHourTime;
 		$("#formtime").flipswitch("refresh");
 
-		$("#formnotifications")[0].checked = pushNotifications;
+		$("#formnotifications")[0].checked = setUpSettings.pushNotifications;
 		$("#formnotifications").flipswitch("refresh");
 
-		$("#formselect").val(dateformat).change();
+		$("#formselect").val(setUpSettings.dateformat).change();
 
-		$("#formdays").val(daysperweek);
+		$("#formdays").val(setUpSettings.daysperweek);
+		
 		dateConverter.getDay();
 
 		setTimeout(setUpSettings.checkDateRan, 10);
@@ -71,6 +72,7 @@ var setUpSettings = {
 		}
 	},
 	handleSubmit: function() {
+		console.log('saving');
 		var twelveHourTime = $("#formtime")[0].checked;
 		var pushNotifications = $("#formnotifications")[0].checked;
 		var dateformat = $("#formselect").val();
@@ -87,6 +89,7 @@ var setUpSettings = {
 	loadSettings: function() {
 		localforage.getItem('twelveHourTime').then(function(twelveHourTime) {
 			if (twelveHourTime == undefined) {
+				console.log('spaghetti');
 				twelveHourTime = false;
 				localforage.setItem('twelveHourTime', twelveHourTime);
 			}
@@ -107,6 +110,8 @@ var setUpSettings = {
 						}
 
 						setUpSettings.twelveHourTime = twelveHourTime;
+						console.log(twelveHourTime);
+						console.log(setUpSettings.twelveHourTime);
 						setUpSettings.pushNotifications = pushNotifications;
 						setUpSettings.dateformat = dateformat;
 						setUpSettings.daysperweek = daysperweek;
