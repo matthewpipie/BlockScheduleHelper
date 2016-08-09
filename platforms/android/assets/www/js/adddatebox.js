@@ -248,7 +248,7 @@ var adddatebox = {
 				adddatebox.daycounter %= value;
 
 				if (adddatebox.daycounter < 0) {
-					adddatebox.daycounter += 7;
+					adddatebox.daycounter += value;
 				}
 
 				$("#date").text("Day " + parseInt(adddatebox.daycounter + 1).toString());

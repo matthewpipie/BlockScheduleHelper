@@ -63,9 +63,6 @@ td:nth-child(odd) {
 #editor {
 	height: 100%;
 }
-#content {
-	height: 90%;
-}
 
 #formremove {
 	background-color: red;
