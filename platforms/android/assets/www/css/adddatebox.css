@@ -18,7 +18,7 @@
  */
 
 #leftbutton, #rightbutton, #date {
-	height: 100%;
+	height: 56px;
 }
 
 #leftbutton, #rightbutton {
@@ -46,7 +46,6 @@
 
 #datebox {
 	width: 100%;
-	height: 56px;
 	background-color: #F7F7F7;
 	border: 1px #CECECE solid;
 	text-align: center;
@@ -69,4 +68,16 @@
 
 #bar2, #bar3 {
 	transform: rotate(45deg);
+}
+
+.break td {
+	background: #defff3 !important;
+}
+
+.global td {
+	background: #e1eaff !important;
+}
+
+.global.break td {
+	background: #E0F5F9 !important;
 }

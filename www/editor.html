@@ -65,20 +65,20 @@
 			<div data-role='panel' id='mainpanel' data-position-fixed='true' data-display='overlay'></div>
 
 			<div data-role="popup" id="openpopup" class="ui-content" data-theme="a">
+				<div tabindex="1"></div>
+				<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
 				<form>
-					<div tabindex="1"></div>
 					Name: <input type="text" id="formname" />
 					Start Time: <input type="time" id="formstarttime" />
 					End Time: <input type="time" id="formendtime" />
-					Room #: <input type="text" id="formroom" />
-					Break: <input type="checkbox" data-role="flipswitch" id="formbreak" data-on-text="Yes" data-off-text="No" />
-					Global: <input type="checkbox" data-role="flipswitch" id="formglobal" data-on-text="Yes" data-off-text="No" />
+					Room #: <input type="text" id="formroom" placeholder="Optional" />
+					Break: <input type="checkbox" data-role="flipswitch" id="formbreak" data-on-text="Yes" data-off-text="No" /><br />
+					Every Day: <input type="checkbox" data-role="flipswitch" id="formglobal" data-on-text="Yes" data-off-text="No" />
 					<fieldset class="ui-grid-a">
-						<div class="ui-block-a"><input id="formcancel" type="button" value="Cancel" /></div>
+						<div class="ui-block-a"><input id="formremove" type="button" value="Remove" /></div>
 						<div class="ui-block-b"><input id="formsubmit" type="button" value="Save" /></div>
 					</fieldset>
-					<input id="formremove" type="button" value="Remove" />
-					
+
 				</form>
 			</div>
 
@@ -90,7 +90,7 @@
 				<table>
 					<tbody id='scheduletable'></tbody>
 				</table>
-				<div class="plusbuttonholder"><span class="plusbutton">+</span></div>
+				<div class="plusbuttonholder">+</div>
 				
 			</div>
 

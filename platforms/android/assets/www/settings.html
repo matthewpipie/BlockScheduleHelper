@@ -47,9 +47,11 @@
 		<script src="./deps/localForage/localforage-cordovasqlitedriver.js"></script>
 	<script type="text/javascript" src="./js/setUpStorage.js"></script>
 	<script type="text/javascript" src="./js/addmenu.js"></script>
+	<script type="text/javascript" src="./js/dateConverter.js"></script>
+	<script type="text/javascript" src="./js/setUpSettings.js"></script>
 	<script type="text/javascript" src="./js/settings.js"></script>
 	
-		<title>Hello World</title>
+		<title>Hello World3</title>
 
 </head>
 
@@ -64,14 +66,22 @@
 			</div>
 
 			<div data-role="content" id="content">
-				<table>
-					<tbody id='scheduletable'>
-						<tr>
-							<th>Time</th>
-							<th>Class</th>
-						</tr>
-					</tbody>
-				</table>
+				<form>
+					<ul id="mainform">	
+						<li>12-Hour Time: <input type="checkbox" data-role="flipswitch" id="formtime" data-on-text="Yes" data-off-text="No" /></li>
+						<li>Push Notifications - WIP: <input type="checkbox" data-role="flipswitch" id="formnotifications" data-on-text="Yes" data-off-text="No" disabled /></li>
+						<li class="oneline" id="df">Date Format: <select id="formselect">
+								<option value=0>mm/dd/yyyy</option>
+								<option value=1>dd/mm/yyyy</option>
+								<option value=2>yyyy/mm/dd</option>
+							</select>
+						</li>
+						<li class="oneline">Days Per School Week: <input type="number" id="formdays" /></li>
+						<li class="oneline">Today: Day <input type="number" id="formtoday" /></li>
+						<li><input id="formsubmit" type="button" value="Save" /></li>
+						<li><input id="formreset" type="button" value="Clear Scheulde" /></li>
+					</ul>
+				</form>
 			</div>
 
 		</div>    <!-- /page -->

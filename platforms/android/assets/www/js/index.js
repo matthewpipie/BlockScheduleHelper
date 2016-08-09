@@ -40,11 +40,6 @@ var app = {
 	// function, we must explicitly call 'app.receivedEvent(...);'
 	onDeviceReady: function() {
 		app.receivedEvent('deviceready');
-
-		$('#testingpls2').click(function() {
-			localforage.clear();
-		});
-
 	},
 
 	pagecontainerbeforeshow: function() {
@@ -58,7 +53,6 @@ var app = {
 		addmenu[id]();
 		dateConverter[id]();
 		adddatebox[id]();
-		alert(id);
 
 	}
 };

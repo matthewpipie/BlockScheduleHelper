@@ -1,0 +1,23 @@
+#mainform {
+	list-style: none;
+	padding: 0 3% 0 3%;
+}
+
+.oneline div {
+	display: inline-block;
+	width: 3em;
+}
+
+#df.oneline div {
+	width: 6em;
+}
+
+#formsubmit {
+	background-color: green;
+    opacity: .3;
+}
+
+#formreset {
+	background-color: red;
+    opacity: .3;
+}

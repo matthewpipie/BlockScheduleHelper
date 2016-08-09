@@ -5,6 +5,8 @@ var dateConverter = {
 	dateSet: false,
 	currentDay: 0,
 	currentDate: {},
+	firstTime: true,
+	firstDay: 0,
 
 	getDay: function() {
 		dateConverter.dateToFind = new Date(dateConverter.currentDate);
@@ -22,11 +24,17 @@ var dateConverter = {
 				}
 
 				dateConverter.currentDay = dateConverter.calculateDay(value);
-				if (adddatebox.showWeekendAndDate) {
-									localforage.setItem('currentDay', dateConverter.currentDay);
-				console.log('setting currentDay as ' + dateConverter.currentDay);
 
+				if (dateConverter.firstTime) {
+					dateConverter.firstDay = dateConverter.currentDay;
+					dateConverter.firstTime = false;
 				}
+				if (typeof(adddatebox) != "undefined") {
+					if (adddatebox.showWeekendAndDate) {
+						localforage.setItem('currentDay', dateConverter.currentDay);
+					}
+				}
+				
 				dateConverter.dateSet = true;
 			});
 		});
@@ -69,12 +77,15 @@ var dateConverter = {
 			daysBetween = -(dateConverter.getBusinessDatesCount(dateConverter.dateToFind, dateConverter.setDateO));
 		}
 
+		daysBetween += dateConverter.setDay;
+
 		daysBetween %= daysperweek;
 
 		if (daysBetween < 0) {
-			daysBetween += 7;
-		}
+			daysBetween += daysperweek;
 
+		}
+		console.log(dateConverter.setDay);
 		return daysBetween;
 	},
 
