@@ -1,12 +1,39 @@
 var setUpSettings = {
+
+	twelveHourTime: false,
+	pushNotifications: false,
+	dateformat: 0,
+	daysperweek: 7,
+	ready: false,
+
 	pagecontainerbeforeshow: function() {
 		setUpSettings.loadSettings();
 	},
 	deviceready: function() {
+		setUpSettings.updateSettings();
 		$('#formsubmit').click(function(ev) {ev.preventDefault(); setUpSettings.handleSubmit()});
 		$('#formdays').change(setUpSettings.verifyDay);
 		$('#formtoday').change(setUpSettings.verifyToday);
 		$('#formreset').click(function(ev) {ev.preventDefault(); setUpSettings.confirmReset()});
+	},
+
+	updateSettings: function() {
+		if (!setUpSettings.ready) {
+			setTimeout(setUpSettings.updateSettings, 10);
+			return;
+		}
+		$("#formtime")[0].checked = twelveHourTime;
+		$("#formtime").flipswitch("refresh");
+
+		$("#formnotifications")[0].checked = pushNotifications;
+		$("#formnotifications").flipswitch("refresh");
+
+		$("#formselect").val(dateformat).change();
+
+		$("#formdays").val(daysperweek);
+		dateConverter.getDay();
+
+		setTimeout(setUpSettings.checkDateRan, 10);
 	},
 
 	verifyDay: function() {
@@ -78,19 +105,12 @@ var setUpSettings = {
 							daysperweek = 7;
 							localforage.setItem('daysperweek', daysperweek);
 						}
-						
-						$("#formtime")[0].checked = twelveHourTime;
-						$("#formtime").flipswitch("refresh");
 
-						$("#formnotifications")[0].checked = pushNotifications;
-						$("#formnotifications").flipswitch("refresh");
-
-						$("#formselect").val(dateformat).change();
-
-						$("#formdays").val(daysperweek);
-						dateConverter.getDay();
-
-						setTimeout(setUpSettings.checkDateRan, 10);
+						setUpSettings.twelveHourTime = twelveHourTime;
+						setUpSettings.pushNotifications = pushNotifications;
+						setUpSettings.dateformat = dateformat;
+						setUpSettings.daysperweek = daysperweek;
+						setUpSettings.ready = true;
 
 					});
 				});
@@ -100,6 +120,7 @@ var setUpSettings = {
 	checkDateRan: function() {
 		if (dateConverter.firstTime) {
 			setTimeout(setUpSettings.checkDateRan, 10);
+			return;
 		}
 
 		$("#formtoday").val(dateConverter.firstDay + 1);

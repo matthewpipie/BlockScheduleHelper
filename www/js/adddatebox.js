@@ -18,15 +18,6 @@
  * under the License.
  */
 
-var testconstructor = function(id, className, starttime, endtime, isBreak, isGlobal) {
-	this.id = id;
-	this.className = className;
-	this.starttime = starttime;
-	this.endtime = endtime;
-	this.isBreak = isBreak;
-	this.isGlobal = isGlobal;
-};
-
 var adddatebox = {
 	sortedSchedule: "",
 	showWeekendAndDate: true,
@@ -74,7 +65,6 @@ var adddatebox = {
 				var formatteddate = adddatebox.days[dateConverter.currentDate.getDay()].substr(0, 3) + " ";
 				var month = (parseInt(dateConverter.currentDate.getMonth()) + 1).toString();
 				var day = dateConverter.currentDate.getDate();
-				var year = dateConverter.currentDate.getFullYear();
 				switch(value) {
 					case 1:
 						formatteddate += day + "/" + month;
