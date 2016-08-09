@@ -39,6 +39,7 @@ var adddatebox = {
 	'<span id="date"></span>' +
 	'<span id="rightbutton"><span id="bar3"></span><span id="bar4"></span></span>' +
 '</div>',
+	days: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
 
 	waitUntilDateSet: function() {
 		if (!dateConverter.dateSet) {
@@ -70,24 +71,30 @@ var adddatebox = {
 					localforage.setItem('twelveHourTime', value2);
 				}
 
-				var formatteddate;
+				var formatteddate = adddatebox.days[dateConverter.currentDate.getDay()].substr(0, 3) + " ";
 				var month = (parseInt(dateConverter.currentDate.getMonth()) + 1).toString();
 				var day = dateConverter.currentDate.getDate();
 				var year = dateConverter.currentDate.getFullYear();
 				switch(value) {
 					case 1:
-						formatteddate = day + "/" + month + "/" + year;
+						formatteddate += day + "/" + month;
 						break;
 					case 2:
-						formatteddate = year + "/" + month + "/" + day;
+						if (month.length == 1) {
+							month = "0" + month;
+						}
+						if (day.toString().length == 1) {
+							day = "0" + day;
+						}
+						formatteddate += "--" + month + "-" + day;
 						break;
 					default:
-						formatteddate = month + "/" + day + "/" + year;
+						formatteddate += month + "/" + day;
 						break;
 				}
 
 				if (dateConverter.currentDate.getDay() == 0 || dateConverter.currentDate.getDay() == 6) {
-					$("#date").text("Weekend - " + formatteddate);
+					$("#date").text(formatteddate);
 					adddatebox.updateDateBox(null)
 				} else {
 					$("#date").text("Day " + parseInt(dateConverter.currentDay + 1).toString() + " - " + formatteddate);
@@ -147,11 +154,10 @@ var adddatebox = {
 			finalTime += " PM";
 		}
 		else {
-			finalTime = time + " AM";
+			finalTime += hours;
+			finalTime += time.substr(2);
+			finalTime += " AM";
 		}
-		/*if (finalTime.length == 7) {
-			finalTime = "0" + finalTime;
-		}*/
 
 		return finalTime;
 
@@ -180,6 +186,8 @@ var adddatebox = {
 		var sortedinfos = [];
 		for (var i = 0; i < infos.length; i++) {
 			var temp = [];
+			console.log(infos);
+			console.log(infos[i]);
 			for (var j = 0; j < infos[i].length; j++) {
 				var temptime = infos[i][j]['starttime'].split(":");
 				temp.push({'id': infos[i][j]['id'], 'starttime': parseInt(temptime[0] * 60 + temptime[1])});

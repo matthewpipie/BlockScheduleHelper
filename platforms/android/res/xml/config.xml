@@ -10,12 +10,12 @@
     <feature name="Notification">
         <param name="android-package" value="org.apache.cordova.dialogs.Notification" />
     </feature>
-    <name>BlockScheduleApp</name>
+    <name>Block Schedule Helper</name>
     <description>
-        A sample Apache Cordova application that responds to the deviceready event.
+        A simple app to help manage block schedules.
     </description>
-    <author email="dev@cordova.apache.org" href="http://cordova.io">
-        Apache Cordova Team
+    <author email="matthewpipie@gmail.com" href="matthewpipie.ddns.net">
+        matthewpipie
     </author>
     <content src="index.html" />
     <access origin="*" />

@@ -185,6 +185,9 @@ var adddatebox = {
 	decompress: function(infos, infos2) {
 		var sortedinfos = [];
 		for (var i = 0; i < infos.length; i++) {
+			if (infos[i] == undefined) {
+				continue;
+			}
 			var temp = [];
 			for (var j = 0; j < infos[i].length; j++) {
 				var temptime = infos[i][j]['starttime'].split(":");

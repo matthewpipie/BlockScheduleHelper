@@ -5,11 +5,7 @@
 
 .oneline div {
 	display: inline-block;
-	width: 3em;
-}
-
-#df.oneline div {
-	width: 6em;
+	width: 4em;
 }
 
 #formsubmit {
