@@ -83,6 +83,12 @@ var adddatebox = {
 						break;
 				}
 
+				var today = new Date();
+
+				if (today.getMonth() == dateConverter.currentDate.getMonth() && today.getDate() == day && today.getFullYear() == dateConverter.currentDate.getFullYear()) {
+					formatteddate = "Today";
+				}
+
 				if (dateConverter.currentDate.getDay() == 0 || dateConverter.currentDate.getDay() == 6) {
 					$("#date").text(formatteddate);
 					adddatebox.updateDateBox(null)
@@ -215,7 +221,7 @@ var adddatebox = {
 			localforage.setItem('daysperweek', value3);
 		}
 		if (value == undefined) {
-			$('#content').append("Create a schedule by clicking on the menu icon!");
+			$('#content').append("Create a schedule by clicking on the menu icon and going to the editor");
 			value = [];
 			for (var i = 0; i < value3; i++) {
 				value.push([]);
