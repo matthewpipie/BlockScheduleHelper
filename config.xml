@@ -7,7 +7,7 @@
     <author email="matthewpipie@gmail.com" href="matthewpipie.ddns.net">
         matthewpipie
     </author>
-	<icon src="./icon.png" />
+    <icon src="./icon.png" />
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
@@ -27,4 +27,5 @@
     <plugin name="cordova-sqlite-storage" spec="https://github.com/litehelpers/Cordova-sqlite-storage.git" />
     <plugin name="cordova-plugin-dialogs" spec="~1.2.1" />
     <engine name="android" spec="~5.2.1" />
+    <engine name="ios" spec="~4.2.0" />
 </widget>
