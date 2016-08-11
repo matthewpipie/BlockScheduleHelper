@@ -1,1 +1,0 @@
-var setUpStorage={storage:!1,pagecontainerbeforeshow:function(){},deviceready:function(){localforage.defineDriver(window.cordovaSQLiteDriver).then(function(){return localforage.setDriver([window.cordovaSQLiteDriver._driver,localforage.INDEXEDDB,localforage.WEBSQL,localforage.LOCALSTORAGE])}).then(function(){storage=!0})}};
