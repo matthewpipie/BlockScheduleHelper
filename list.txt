@@ -1,0 +1,25 @@
+stuff i had to do to get mac:
+
+sudo cordova platform remove ios —save —uninstall
+sudo cordova platform add ios —save
+
+FIX ICON - remove from the config.xml
+
+sudo cordova plugin add cordova-plugin-statusbar —save
+
+IN <platform name=“ios”>
+
+Add <preference name=“StatusBarOverlaysWebView” value=“false” /> to config.xml
+	<preference name=“StatusBarBackgroundColor” value=“#e9e9e9” />
+	<preference name=“StatusBarStyle” value=“default” />
+
+</platform>
+
+style.css: add #header {border-top: transparent}
+
+resized icon.png to 1078x1078 (or whatever to make it square)
+
+did cordova-icon
+made splash.png
+did cordova-splash
+
