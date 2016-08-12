@@ -1,1 +1,144 @@
-var setUpSettings={twelveHourTime:!1,pushNotifications:!1,dateformat:0,daysperweek:7,ready:!1,pagecontainerbeforeshow:function(){},deviceready:function(){setUpSettings.loadSettings(),setUpSettings.updateSettings(),$("#formsubmit").click(function(a){a.preventDefault(),setUpSettings.handleSubmit()}),$("#formdays").change(setUpSettings.verifyDay),$("#formtoday").change(setUpSettings.verifyToday),$("#formreset").click(function(a){a.preventDefault(),setUpSettings.confirmReset()})},updateSettings:function(){return setUpSettings.ready?($("#formtime")[0].checked=setUpSettings.twelveHourTime,$("#formtime").flipswitch("refresh"),$("#formnotifications")[0].checked=setUpSettings.pushNotifications,$("#formnotifications").flipswitch("refresh"),$("#formselect").val(setUpSettings.dateformat).change(),$("#formdays").val(setUpSettings.daysperweek),dateConverter.getDay(),void setTimeout(setUpSettings.checkDateRan,10)):void setTimeout(setUpSettings.updateSettings,10)},verifyDay:function(){$("#formdays").val()&&$("#formdays").val()==parseInt($("#formdays").val())?parseInt($("#formdays").val())<1&&$("#formdays").val(1):$("#formdays").val(7),setUpSettings.verifyToday()},verifyToday:function(){var a=parseInt($("#formdays").val()),b=parseInt($("#formtoday").val());$("#formtoday").val()&&$("#formtoday").val()==parseInt($("#formtoday").val())||(b=1),b>a&&(b%=a),b<1&&(b=a),$("#formtoday").val(b)},confirmReset:function(){navigator.notification.confirm("Are you sure you would like to delete your schedule?  This can NOT be undone.",setUpSettings.handleReset,"Reset Schedule")},handleReset:function(a){1==a&&(localforage.setItem("schedule",[]),localforage.setItem("globalSchedule",[]),navigator.notification.alert("Schedule cleared."))},handleSubmit:function(){console.log("saving");var a=$("#formtime")[0].checked,b=$("#formnotifications")[0].checked,c=$("#formselect").val(),d=$("#formdays").val(),e=$("#formtoday").val();localforage.setItem("twelveHourTime",a),localforage.setItem("pushNotifications",b),localforage.setItem("dateformat",parseInt(c)),localforage.setItem("daysperweek",parseInt(d)),localforage.setItem("currentDay",parseInt(e)),dateConverter.setDateDay("",parseInt(e)-1)},loadSettings:function(){localforage.getItem("twelveHourTime").then(function(a){void 0==a&&(console.log("spaghetti"),a=!1,localforage.setItem("twelveHourTime",a)),localforage.getItem("pushNotifications").then(function(b){void 0==b&&(b=!1,localforage.setItem("pushNotifications",b)),localforage.getItem("dateformat").then(function(c){void 0==c&&(c=0,localforage.setItem("dateformat",c)),localforage.getItem("daysperweek").then(function(d){void 0==d&&(d=7,localforage.setItem("daysperweek",d)),setUpSettings.twelveHourTime=a,console.log(a),console.log(setUpSettings.twelveHourTime),setUpSettings.pushNotifications=b,setUpSettings.dateformat=c,setUpSettings.daysperweek=d,setUpSettings.ready=!0})})})})},checkDateRan:function(){return dateConverter.firstTime?void setTimeout(setUpSettings.checkDateRan,10):void $("#formtoday").val(dateConverter.firstDay+1)}};
+var setUpSettings = {
+
+	twelveHourTime: false,
+	pushNotifications: false,
+	dateformat: 0,
+	daysperweek: 7,
+	ready: false,
+
+	pagecontainerbeforeshow: function() {
+	},
+	deviceready: function() {
+		setUpSettings.loadSettings();
+		setUpSettings.updateSettings();
+		$('#formsubmit').click(function(ev) {ev.preventDefault(); setUpSettings.handleSubmit()});
+		$('#formdays').change(setUpSettings.verifyDay);
+		$('#formtoday').change(setUpSettings.verifyToday);
+		$('#formreset').click(function(ev) {ev.preventDefault(); setUpSettings.confirmReset()});
+		$('#formreset2').click(function(ev) {ev.preventDefault(); setUpSettings.confirmReset2()});
+	},
+
+	updateSettings: function() {
+		if (!setUpSettings.ready) {
+			setTimeout(setUpSettings.updateSettings, 10);
+			return;
+		}
+		$("#formtime")[0].checked = setUpSettings.twelveHourTime;
+		$("#formtime").flipswitch("refresh");
+
+		$("#formnotifications")[0].checked = setUpSettings.pushNotifications;
+		$("#formnotifications").flipswitch("refresh");
+
+		$("#formselect").val(setUpSettings.dateformat).change();
+
+		$("#formdays").val(setUpSettings.daysperweek);
+		
+		dateConverter.getDay();
+
+		setTimeout(setUpSettings.checkDateRan, 10);
+	},
+
+	verifyDay: function() {
+		if (!$("#formdays").val() || $("#formdays").val() != parseInt($("#formdays").val())) {
+			$("#formdays").val(7);
+		}
+		else if (parseInt($("#formdays").val()) < 1) {
+			$("#formdays").val(1);
+		}
+		setUpSettings.verifyToday();
+	},
+	verifyToday: function() {
+		var daysperweek = parseInt($("#formdays").val());
+		var currentDay = parseInt($("#formtoday").val());
+		if (!$("#formtoday").val() || $("#formtoday").val() != parseInt($("#formtoday").val())) {
+			currentDay = 1;
+		}
+		if (currentDay > daysperweek) {
+			currentDay %= daysperweek;
+		}
+		if (currentDay < 1) {
+			currentDay = daysperweek;
+		}
+		$('#formtoday').val(currentDay);
+	},
+
+	confirmReset: function() {
+		navigator.notification.confirm("Are you sure you would like to delete your schedule?  This can NOT be undone.", setUpSettings.handleReset, "Reset Schedule");
+	},
+	confirmReset2: function() {
+		navigator.notification.confirm("Are you sure you would like to delete all of your classes?  This can NOT be undone.", setUpSettings.handleReset2, "Reset Classes");
+	},
+	handleReset: function(buttonIndex) {
+		if (buttonIndex == 1) {
+			localforage.setItem('schedule', undefined);
+			localforage.setItem('globalSchedule', undefined);
+			navigator.notification.alert("Schedule deleted.");
+		}
+	},
+	handleReset2: function(buttonIndex) {
+		if (buttonIndex == 1) {
+			localforage.setItem('schoolClasses', undefined);
+			navigator.notification.alert("Classes deleted.");
+		}
+	},
+	handleSubmit: function() {
+		console.log('saving');
+		var twelveHourTime = $("#formtime")[0].checked;
+		var pushNotifications = $("#formnotifications")[0].checked;
+		var dateformat = $("#formselect").val();
+		var daysperweek = $("#formdays").val();
+		var currentDay = $("#formtoday").val();
+
+		localforage.setItem('twelveHourTime', twelveHourTime);
+		localforage.setItem('pushNotifications', pushNotifications);
+		localforage.setItem('dateformat', parseInt(dateformat));
+		localforage.setItem('daysperweek', parseInt(daysperweek));
+		localforage.setItem('currentDay', parseInt(currentDay));
+		dateConverter.setDateDay("", parseInt(currentDay) - 1);
+	},
+	loadSettings: function() {
+		localforage.getItem('twelveHourTime').then(function(twelveHourTime) {
+			if (twelveHourTime == undefined) {
+				console.log('spaghetti');
+				twelveHourTime = false;
+				localforage.setItem('twelveHourTime', twelveHourTime);
+			}
+			localforage.getItem('pushNotifications').then(function(pushNotifications) {
+				if (pushNotifications == undefined) {
+					pushNotifications = false;
+					localforage.setItem('pushNotifications', pushNotifications);
+				}
+				localforage.getItem('dateformat').then(function(dateformat) {
+					if (dateformat == undefined) {
+						dateformat = 0;
+						localforage.setItem('dateformat', dateformat);
+					}
+					localforage.getItem('daysperweek').then(function(daysperweek) {
+						if (daysperweek == undefined) {
+							daysperweek = 7;
+							localforage.setItem('daysperweek', daysperweek);
+						}
+
+						setUpSettings.twelveHourTime = twelveHourTime;
+						console.log(twelveHourTime);
+						console.log(setUpSettings.twelveHourTime);
+						setUpSettings.pushNotifications = pushNotifications;
+						setUpSettings.dateformat = dateformat;
+						setUpSettings.daysperweek = daysperweek;
+						setUpSettings.ready = true;
+
+					});
+				});
+			});
+		});
+	},
+	checkDateRan: function() {
+		if (dateConverter.firstTime) {
+			setTimeout(setUpSettings.checkDateRan, 10);
+			return;
+		}
+
+		$("#formtoday").val(dateConverter.firstDay + 1);
+	}
+
+}
