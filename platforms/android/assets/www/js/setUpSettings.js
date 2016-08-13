@@ -18,7 +18,7 @@ var setUpSettings = {
 		$('#formtoday').change(setUpSettings.verifyToday);
 		$('#formreset').click(function(ev) {ev.preventDefault(); setUpSettings.confirmReset()});
 		$('#formreset2').click(function(ev) {ev.preventDefault(); setUpSettings.confirmReset2()});
-		setUpSettings.makeNewScheduleEvents();
+		//setUpSettings.makeNewScheduleEvents();
 	},
 
 	updateSettings: function() {
@@ -36,6 +36,7 @@ var setUpSettings = {
 
 		$("#formdays").val(setUpSettings.daysperweek);
 		
+		dateConverter.currentDate = new Date();
 		dateConverter.getDay();
 
 		setTimeout(setUpSettings.checkDateRan, 10);
@@ -96,7 +97,6 @@ var setUpSettings = {
 				localforage.getItem('globalSchedule').then(function(globalSchedule) {
 					localforage.getItem('daysperweek').then(function(daysperweek) {
 						localforage.getItem('dateday').then(function(dateday) {
-
 							if (schoolClasses == undefined) {
 								schoolClasses = [];
 								localforage.setItem('schoolClasses', schoolClasses);
@@ -124,7 +124,7 @@ var setUpSettings = {
 								clearTimeout(timeouts[i]);
 							}
 
-							day = setUpSettings.calculateDay(dateday, daysperweek);
+							day = setUpSettings.calculateDay(dateday, daysperweek, new Date());
 
 							var timeAndId = []; //{id: '5', starttime: 13546, endtime: 15493, isGlobal: false}
 							for (var j = 0; j < schedule[day].length; j++) {
@@ -146,66 +146,145 @@ var setUpSettings = {
 							
 							var nowTime = now.getHours() * 60 + now.getMinutes();
 
-							var isInClassAndInit = false;
-							if (isInit) {
-								var results = starttimeSorted.filter(function(a) {return a['starttime'] < nowTime && a['endtime'] > nowTime});
-								isInClassAndInit = (results.length == 0 ? false : true);
-								if (nowTime < starttimeSorted[0]['starttime'] - 600) {
-									isInClassAndInit = true;
-								}
-							}
 
-							var hasfound1 = isInClassAndInit;
+							var firstStartTime;
+							var isRegular = true;
+							var hasfound1 = false;
 							var hasfound2 = false;
 							var hasfound3 = false;
-							for (var i = nowTime; i < 1439; i++) {
+							var i;
+							var j;
+							for (i = nowTime; i < 1439; i++) {
 								if (starttimeSorted.filter(function(a) {return a['starttime'] == i}).length) {
-									if (!hasfound1) {hasfound1 = true; continue;}
+									if (!hasfound1) {firstStartTime = i; hasfound1 = true; continue;}
 									else {
 										hasfound2 = true;
 										break;
 									}
 								}
 							}
-							if (!hasfound2) {
-								return;// NEXT THINGO IS TOMORROW TODO TODO AL:DFKJ :KSJDFLKSJDNFLKJSHNDFKJWEBSDFKBVWSKDEFBVKEDWSBFVKWIEJBDFGKIWSUJEBGDFRIKLWEDBGFKIEWBGDR>FKLBGWE>DLKIRFBGEWDIKLJRFBGWKIDBFRG
+
+							if (!hasfound1) {
+								isRegular = false;
 							}
 
-							for (var j = i; j >= 0; j--) {
+							if (isInit) {
+								var results = starttimeSorted.filter(function(a) {return a['starttime'] < nowTime && a['endtime'] > nowTime});
+
+								if (firstStartTime - nowTime > 10 || results.length != 0) {
+									//schedule aft
+									i = firstStartTime;
+									hasfound2 = true;
+								}
+								if (now.getDay() == 6 || now.getDay() == 0) {
+									isRegular = false;
+								}
+
+								/* get closest ahead starttime and endtime before it
+								if greater than 10 mins from now till next starttime AND isInit
+								if less,
+									if you are in a class AND isInit, schedule
+									if not, skip one starttime and schedule then*/
+
+							}
+							
+							if (!hasfound2) {
+								isRegular = false;
+							}
+
+							for (j = i; j >= 0; j--) {
 								if (endtimeSorted.filter(function(a) {return a['endtime'] == j}).length) {
 									hasfound3 = true;
+									firstEndTime = j;
 									break;
 								}
 							}
 
 							if (!hasfound3) {
-								return; //someone made their endtimes past their starttimes....
+								isRegular = false;
+							}
+							var timeToClear;
+							var timeToNotify;
+							var classToNotify;
+							var dateToNotify = new Date();
+							if (isRegular) {
+								timeToClear = i;
+								timeToNotify = j;
+								if (timeToClear - timeToNotify > 10) {
+									timeToNotify = timeToClear - 10;
+								}
+								classToNotify = starttimeSorted.filter(function(a) {return a['starttime'] == timeToClear})[0];
+								dateToNotify.setHours(0);
+								dateToNotify.setSeconds(0);
+								dateToNotify.setMilliseconds(0);
+								dateToNotify.setMinutes(timeToNotify);
+							}
+							else {
+								console.log('no bueno');
+								var newDate = new Date();
+								newDate.setHours(newDate.getHours() + 24);
+								day = setUpSettings.calculateDay(dateday, daysperweek, newDate);
+								var out = false;
+								for (var k = 0; k < 21; k++) {
+									console.log(day);
+										console.log(newDate);
+									if (schedule[day].length != 0 && newDate.getDay() < 6 && newDate.getDay() > 0) {
+										console.log('we out fam');
+										out = true;
+										break;
+									}
+									else {
+										console.log('stuck in eternal poo');
+
+										newDate.setHours(newDate.getHours() + 24);
+										day = setUpSettings.calculateDay(dateday, daysperweek, newDate);
+									}
+								}
+
+								if (!out) {
+									return; //TODO: popup dialog
+								}
+
+								timeAndId = []; //{id: '5', starttime: 13546, endtime: 15493, isGlobal: false}
+								for (var j = 0; j < schedule[day].length; j++) {
+									var starttime = schedule[day][j]['starttime'];
+									starttime = parseInt(starttime.substr(0, 2)) * 60 + parseInt(starttime.substr(3));
+									var endtime = schedule[day][j]['endtime'];
+									endtime = parseInt(endtime.substr(0, 2)) * 60 + parseInt(endtime.substr(3));
+									timeAndId.push({'id': schedule[day][j]['id'], 'starttime': starttime, 'endtime': endtime, 'isGlobal': false});
+								}
+								for (var i = 0; i < globalSchedule.length; i++) {
+									var starttime = globalSchedule[i]['starttime'];
+									starttime = parseInt(starttime.substr(0, 2)) * 60 + parseInt(starttime.substr(3));
+									var endtime = globalSchedule[i]['endtime'];
+									endtime = parseInt(endtime.substr(0, 2)) * 60 + parseInt(endtime.substr(3));
+									timeAndId.push({'id': globalSchedule[i]['id'], 'starttime': starttime, 'endtime': endtime, 'isGlobal': true});
+								}
+								starttimeSorted = timeAndId.sort(function(a, b) {return parseInt(a['starttime'], 10) - parseInt(b['starttime'], 10);})
+								console.log(starttimeSorted);
+								if (starttimeSorted.length == 0) {return;}
+								timeToClear = starttimeSorted[0]['starttime'];
+								console.log(timeToClear);
+								timeToNotify = timeToClear - 10;
+								classToNotify = starttimeSorted[0];
+								dateToNotify = newDate;
+								dateToNotify.setHours(0);
+								dateToNotify.setSeconds(0);
+								dateToNotify.setMilliseconds(0);
+								dateToNotify.setMinutes(timeToNotify);
+								
 							}
 
-							var timeToClear = i;
-							var timeToNotify = j;
-							var dateToNotify = new Date();
-							console.log(timeToClear);
-							console.log(timeToNotify);
-							if (timeToClear - timeToNotify > 600) {
-								console.log('too biggie');
-								timeToNotify = timeToClear - 600;
-							}
-							var classToNotify = starttimeSorted.filter(function(a) {return a['starttime'] == timeToClear})[0];
 							if (classToNotify['isGlobal']) {
 								classToNotify = globalSchedule.filter(function(a) {return a['id'] == classToNotify['id']})[0];
 							}
 							else {
-								console.log(schedule);
-								console.log(classToNotify);
 								classToNotify = schedule[day].filter(function(a) {return a['id'] == classToNotify['id']})[0];
 							}
+							
 							timeouts.push(setTimeout(function() {cordova.plugins.notification.local.clearAll();}, 1000 * (timeToClear - nowTime)));
 
-							dateToNotify.setHours(0);
-							dateToNotify.setSeconds(0);
-							dateToNotify.setMilliseconds(0);
-							dateToNotify.setMinutes(j);
+							console.log(dateToNotify);
 
 							scheduleObj = { 
 								id: 0,
@@ -246,6 +325,7 @@ var setUpSettings = {
 
 		if (setDateO <= dateToFind) { //set before datetofind, aka in the past
 			daysBetween = (dateConverter.getBusinessDatesCount(setDateO, dateToFind) - 1);
+			if (daysBetween == -1) {daysBetween = 0;}
 		} else {
 			daysBetween = -(dateConverter.getBusinessDatesCount(dateToFind, setDateO));
 		}
@@ -260,7 +340,7 @@ var setUpSettings = {
 		return daysBetween;
 	},
 
-	makeNewScheduleEvents: function() {
+	/*makeNewScheduleEvents: function() {
 
 		if (setUpSettings.day === false) {
 			setTimeout(setUpSettings.makeNewScheduleEvents, 10);
@@ -269,9 +349,9 @@ var setUpSettings = {
 
 		cordova.plugins.notification.local.cancelAll(function() {
 			cordova.plugins.notification.local.on('trigger', setUpSettings.scheduleNextEventAndClear);
-			setUpSettings.scheduleNextEventAndClear(null, true);
+			setUpSettings.scheduleNextEventAndClear();
 		});
-	},
+	},*/
 
 	handleSubmit: function() {
 		console.log('saving');
@@ -290,7 +370,10 @@ var setUpSettings = {
 
 		if (pushNotifications && !(setUpSettings.pushNotifications)) {
 			//turned on notifications
-			setUpSettings.scheduleNextEventAndClear()
+			cordova.plugins.notification.local.cancelAll(function() {
+				setUpSettings.scheduleNextEventAndClear(null, true);
+				navigator.notification.alert("Notifications have been turned on.");
+			});
 		}
 		else if (!(pushNotifications) && setUpSettings.pushNotifications) {
 			//turned off notifications
@@ -298,12 +381,15 @@ var setUpSettings = {
 				navigator.notification.alert("Notifications have been turned off.");
 			});
 		}
+		setUpSettings.twelveHourTime = twelveHourTime;
+		setUpSettings.pushNotifications = pushNotifications;
+		setUpSettings.dateformat = dateformat;
+		setUpSettings.daysperweek = daysperweek;
 
 	},
 	loadSettings: function() {
 		localforage.getItem('twelveHourTime').then(function(twelveHourTime) {
 			if (twelveHourTime == undefined) {
-				console.log('spaghetti');
 				twelveHourTime = false;
 				localforage.setItem('twelveHourTime', twelveHourTime);
 			}
@@ -324,8 +410,6 @@ var setUpSettings = {
 						}
 
 						setUpSettings.twelveHourTime = twelveHourTime;
-						console.log(twelveHourTime);
-						console.log(setUpSettings.twelveHourTime);
 						setUpSettings.pushNotifications = pushNotifications;
 						setUpSettings.dateformat = dateformat;
 						setUpSettings.daysperweek = daysperweek;
@@ -342,7 +426,8 @@ var setUpSettings = {
 			return;
 		}
 
-		$("#formtoday").val(dateConverter.firstDay + 1);
+		$("#formtoday").val(dateConverter.firstDay + 2);
+		setUpSettings.verifyToday();
 		setUpSettings.day = dateConverter.firstDay;
 	}
 

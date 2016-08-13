@@ -71,7 +71,7 @@ var dateConverter = {
 	calculateDay: function(daysperweek) {
 		var daysBetween = 0;
 
-		if (dateConverter.setDateO <= dateConverter.dateToFind) { //set before datetofind, aka in the past
+		if (dateConverter.setDateO < dateConverter.dateToFind) { //set before datetofind, aka in the past
 			daysBetween = (dateConverter.getBusinessDatesCount(dateConverter.setDateO, dateConverter.dateToFind) - 1);
 		} else {
 			daysBetween = -(dateConverter.getBusinessDatesCount(dateConverter.dateToFind, dateConverter.setDateO));
