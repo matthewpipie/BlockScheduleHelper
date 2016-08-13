@@ -223,6 +223,26 @@ var schoolClasses = {
 				schoolClasses.updateClassList();
 			});
 
+			localforage.getItem('schedule').then(function(value) {
+				for (var i = 0; i < value.length; i++) {
+					if (value[i] == undefined) {continue;}
+					for (var j = 0; j < value[i].length; j++) {
+						if (value[i][j]['className'] == schoolClasses.currentlyEditing['schoolClass']['id']) {
+							value[i].splice(j, 1);
+						}
+					}
+				}
+				localforage.setItem('schedule', value);
+			});
+			localforage.getItem('globalSchedule').then(function(value2) {
+				for (var i = 0; i < value2.length; i++) {
+					if (value[i]['className'] == schoolClasses.currentlyEditing['schoolClass']['id']) {
+						value.splice(i, 1);
+					}
+				}
+				localforage.setItem('globalSchedule', value2);
+			});
+
 		}
 	},
 
