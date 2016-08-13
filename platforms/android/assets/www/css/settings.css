@@ -1,9 +1,1 @@
-#mainform {
-	list-style: none;
-	padding: 0 3% 0 3%;
-}
-
-.oneline div {
-	display: inline-block;
-	width: 4em;
-}
+#mainform{list-style:none;padding:0 3%}.oneline div{display:inline-block;width:4em}
