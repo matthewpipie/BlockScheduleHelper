@@ -1,0 +1,1 @@
+app.initialize(!1,!0,!1);

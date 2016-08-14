@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "E4975780E2047AE9B63A9729B912AFE40BB4AABB",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "E4975780E2047AE9B63A9729B912AFE40BB4AABB" : 0,
+    "9C0E000D128BE1E594B45D1FB464F4C4928F19A8" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "202CDA37-92D5-4DA0-B1FE-627AAECBE4AB",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "E4975780E2047AE9B63A9729B912AFE40BB4AABB" : "BlockScheduleHelper\/",
+    "9C0E000D128BE1E594B45D1FB464F4C4928F19A8" : "BlockScheduleHelper\/www\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Block Schedule Helper",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "platforms\/ios\/Block Schedule Helper.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/matthewpipie\/BlockScheduleHelperWWW.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "9C0E000D128BE1E594B45D1FB464F4C4928F19A8"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/matthewpipie\/BlockScheduleHelper.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "E4975780E2047AE9B63A9729B912AFE40BB4AABB"
+    }
+  ]
+}
