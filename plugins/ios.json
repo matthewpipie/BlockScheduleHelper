@@ -10,13 +10,13 @@
         "cordova-plugin-dialogs": {
             "PACKAGE_NAME": "net.ddns.matthewpipie.BlockScheduleApp"
         },
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "net.ddns.matthewpipie.BlockScheduleApp"
+        },
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "net.ddns.matthewpipie.BlockScheduleApp"
         },
         "cordova-sqlite-storage": {
-            "PACKAGE_NAME": "net.ddns.matthewpipie.BlockScheduleApp"
-        },
-        "cordova-plugin-statusbar": {
             "PACKAGE_NAME": "net.ddns.matthewpipie.BlockScheduleApp"
         },
         "de.appplant.cordova.plugin.local-notification": {
@@ -24,10 +24,10 @@
         }
     },
     "dependent_plugins": {
-        "cordova-plugin-device": {
+        "cordova-plugin-app-event": {
             "PACKAGE_NAME": "net.ddns.matthewpipie.BlockScheduleApp"
         },
-        "cordova-plugin-app-event": {
+        "cordova-plugin-device": {
             "PACKAGE_NAME": "net.ddns.matthewpipie.BlockScheduleApp"
         }
     }
