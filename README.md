@@ -19,4 +19,4 @@ NOTE: Almost all of the actual code I wrote for this is in a submodule ([BlockSc
 
 # License
 Copyright (c) 2016 Matthew Giordano  
-This program is licensed with the APGLv3 License.  For more, read the LICENSES file.
+The part of the program that I wrote is licensed with the APGLv3 License.  For more, read the LICENSES file in the www folder.
