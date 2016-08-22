@@ -9,6 +9,7 @@ If you want to de-minify the HTML/CSS/JS (recommended)
 `cd BlockScheduleHelper`  
 `cd www`  
 `git checkout master`  
+Then feel free to edit the files in the www directory, as that is where the majority of my code is located.  Good luck reading this mess!
 
 HOW TO TEST CHANGES:  
 First, install `cordova-icon` and `cordova-splash` via `npm install cordova-icon -g` and `npm install cordova-splash -g`  
