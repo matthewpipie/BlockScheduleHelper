@@ -1,5 +1,6 @@
 # BlockScheduleHelper
 Version 2.1.0 by Matthew Giordano (matthewpipie)  
+Download and other stuff: http://matthewpipie.ddns.net/
 
 HOW TO CLONE:  
 `git clone --recursive https://github.com/matthewpipie/BlockScheduleHelper.git`
