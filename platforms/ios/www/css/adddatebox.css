@@ -1,1 +1,19 @@
+/* Block Schedule Helper - A simple app to keep track of block schedules.
+ * Copyright (C) 2016 Matthew Giordano
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Contact the creator (Matthew Giordano) at matthewpipie@gmail.com.
+ */
 #date,#leftbutton,#rightbutton{height:56px}#leftbutton,#rightbutton{width:56px}#leftbutton{float:left;border-right:1px #000 solid}#rightbutton{float:right;border-left:1px #000 solid}#date{font-size:24px;line-height:56px;padding-left:2px;padding-right:2px;color:#4A4A4A}#datebox{width:100%;background-color:#F7F7F7;border:1px solid #CECECE;text-align:center;display:block}#bar1,#bar2,#bar3,#bar4{position:relative;width:23px;height:10px;top:16px;left:14px;background-color:#4A4A4A;display:block;transition-property:.4s none ease-out}#bar1,#bar4{transform:rotate(-45deg)}#bar2,#bar3{transform:rotate(45deg)}.global td:last-child{font-weight:700}

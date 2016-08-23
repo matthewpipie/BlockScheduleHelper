@@ -1,1 +1,19 @@
+/* Block Schedule Helper - A simple app to keep track of block schedules.
+ * Copyright (C) 2016 Matthew Giordano
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Contact the creator (Matthew Giordano) at matthewpipie@gmail.com.
+ */
 table{color:#333;font-family:Helvetica,Arial,sans-serif;width:100%;border-collapse:collapse;border-spacing:0}td,th{border:1px solid transparent;height:30px;transition:all .3s}th{background:#DFDFDF;font-weight:700}td{background:#FAFAFA;text-align:center}tr:nth-child(odd) td{background:#F1F1F1}tr:nth-child(even) td{background:#FEFEFE}td:nth-child(odd){width:1px;white-space:nowrap;padding-right:4%;padding-left:4%}.plusbuttonholder{text-align:center;font-size:4em;opacity:.9;overflow:hidden}#editor{height:100%}

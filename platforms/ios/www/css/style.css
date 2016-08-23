@@ -1,1 +1,19 @@
+/* Block Schedule Helper - A simple app to keep track of block schedules.
+ * Copyright (C) 2016 Matthew Giordano
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Contact the creator (Matthew Giordano) at matthewpipie@gmail.com.
+ */
 body{-webkit-touch-callout:none;-webkit-text-size-adjust:none;-webkit-user-select:none;background-color:#E4E4E4;-webkit-transform:translateZ(0);-webkit-backface-visibility:hidden;-webkit-overflow-scrolling:touch}#header h1{float:right;margin:0 5% 0 0!important;font-size:1.4em}#content{padding:0!important;margin:0!important;overflow-x:visible}fieldset>div:first-child>div.ui-btn.ui-input-btn.ui-corner-all.ui-shadow{margin-left:0!important;margin-right:1%}fieldset>div:last-child>div.ui-btn.ui-input-btn.ui-corner-all.ui-shadow{margin-right:0!important;margin-left:1%}.ui-btn-active{background-color:#f6f6f6!important;border-color:#ddd!important;color:#333!important;text-shadow:#f3f3f3 0 1px 0!important}.ui-overlay-a,.ui-page-theme-a,.ui-page-theme-a .ui-panel-wrapper{text-shadow:none!important}#formremove,#formreset,#formreset2{background-color:red;opacity:.3}#formsubmit{background-color:green;opacity:.3}#openpopup{width:80vw;cursor:pointer}#header{border-top:transparent}
