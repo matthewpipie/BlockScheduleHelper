@@ -17,7 +17,7 @@
        under the License.
  */
 
-package net.ddns.matthewpipie.BlockScheduleAppT;
+package net.ddns.matthewpipie.BlockScheduleApp;
 
 import android.os.Bundle;
 import org.apache.cordova.*;
