@@ -16,4 +16,76 @@
  *
  * Contact the creator (Matthew Giordano) at matthewpipie@gmail.com.
  */
-var app={id:"",showWeekendAndDate:!0,loadClassesNotDatebox:!1,isSettings:!1,initialize:function(a,b,c){app.showWeekendAndDate=a,app.loadClassesNotDatebox=b,app.isSettings=c,app.bindEvents()},bindEvents:function(){navigator.userAgent.indexOf("Android")!=-1?document.addEventListener("deviceready",app.onDeviceReady,!1):$(document).ready(app.onDeviceReady),$(document).one("pagecontainerbeforeshow",app.pagecontainerbeforeshow)},onDeviceReady:function(){app.receivedEvent("deviceready")},pagecontainerbeforeshow:function(){app.receivedEvent("pagecontainerbeforeshow")},mainSetUp:function(){addmenu[app.id](),app.loadClassesNotDatebox?(schoolClasses[app.id](),console.log(app.id),console.log("lol")):(dateConverter[app.id](),app.isSettings?setUpSettings[app.id]():(adddatebox.showWeekendAndDate=app.showWeekendAndDate,adddatebox[app.id]()))},receivedEvent:function(a){app.id=a,"deviceready"!=a&&app.mainSetUp(),setUpStorage[app.id]()}};
+ 
+var app = {
+
+	id: "",
+	showWeekendAndDate: true,
+	loadClassesNotDatebox: false,
+	isSettings: false,
+
+	initialize: function(showWeekendAndDate, loadClassesNotDatebox, isSettings) {
+		app.showWeekendAndDate = showWeekendAndDate;
+		app.loadClassesNotDatebox = loadClassesNotDatebox;
+		app.isSettings = isSettings;
+
+		app.bindEvents();
+	},
+
+	// Bind any events that are required on startup. Common events are:
+	// 'load', 'deviceready', 'offline', and 'online'.
+	bindEvents: function() {
+		if (navigator.userAgent.indexOf("Android") != -1) {
+        	document.addEventListener('deviceready', app.onDeviceReady, false);
+		} else {
+			$(document).ready(app.onDeviceReady);
+		}
+		//$(document).one('pagebeforeshow', '.page', app.pagebeforeshow);
+		//$(document).one('deviceready', app.onDeviceReady);
+		$(document).one("pagecontainerbeforeshow", app.pagecontainerbeforeshow);
+	},
+	// deviceready Event Handler
+	//
+	// The scope of 'this' is the event. In order to call the 'receivedEvent'
+	// function, we must explicitly call 'app.receivedEvent(...);'
+	onDeviceReady: function() {
+		app.receivedEvent('deviceready');
+	},
+
+	pagecontainerbeforeshow: function() {
+		app.receivedEvent('pagecontainerbeforeshow');
+	},
+
+	mainSetUp: function() {
+		addmenu[app.id]();
+
+		if (app.loadClassesNotDatebox) {
+			schoolClasses[app.id]();
+			console.log(app.id);
+			console.log('lol');
+		}
+
+		else {
+			dateConverter[app.id]();
+			if (app.isSettings) {
+				setUpSettings[app.id]();
+			}
+			else {
+				adddatebox.showWeekendAndDate = app.showWeekendAndDate;
+				adddatebox[app.id]();
+			}
+		}
+	},
+
+	// Update DOM on a Received Event
+	receivedEvent: function(id) {
+		app.id = id;
+
+		if (id != 'deviceready') {
+			app.mainSetUp();
+		}
+
+		setUpStorage[app.id]();
+
+	}
+};
