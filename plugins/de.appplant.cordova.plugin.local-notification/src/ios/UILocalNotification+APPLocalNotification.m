@@ -62,8 +62,8 @@ NSInteger const APPLocalNotificationTypeTriggered = 2;
     self.timeZone = [NSTimeZone defaultTimeZone];
     self.applicationIconBadgeNumber = options.badgeNumber;
     if (NSCalendarUnitEra != options.repeatInterval) {
- +      self.repeatInterval = options.repeatInterval;
- +  }
+        self.repeatInterval = options.repeatInterval;
+    }
     self.alertBody = options.alertBody;
     self.soundName = options.soundName;
 

@@ -24,10 +24,10 @@
         }
     },
     "dependent_plugins": {
-        "cordova-plugin-app-event": {
+        "cordova-plugin-device": {
             "PACKAGE_NAME": "net.ddns.matthewpipie.BlockScheduleApp"
         },
-        "cordova-plugin-device": {
+        "cordova-plugin-app-event": {
             "PACKAGE_NAME": "net.ddns.matthewpipie.BlockScheduleApp"
         }
     }

@@ -25,6 +25,14 @@ module.exports = [
         ]
     },
     {
+        "id": "cordova-plugin-device.device",
+        "file": "plugins/cordova-plugin-device/www/device.js",
+        "pluginId": "cordova-plugin-device",
+        "clobbers": [
+            "device"
+        ]
+    },
+    {
         "id": "de.appplant.cordova.plugin.local-notification.LocalNotification",
         "file": "plugins/de.appplant.cordova.plugin.local-notification/www/local-notification.js",
         "pluginId": "de.appplant.cordova.plugin.local-notification",
@@ -50,14 +58,6 @@ module.exports = [
             "cordova.plugins.notification.local.core",
             "plugin.notification.local.core"
         ]
-    },
-    {
-        "id": "cordova-plugin-device.device",
-        "file": "plugins/cordova-plugin-device/www/device.js",
-        "pluginId": "cordova-plugin-device",
-        "clobbers": [
-            "device"
-        ]
     }
 ];
 module.exports.metadata = 
@@ -67,9 +67,9 @@ module.exports.metadata =
     "cordova-plugin-statusbar": "2.1.3",
     "cordova-plugin-whitelist": "1.2.2",
     "cordova-sqlite-storage": "1.4.6-pre5",
-    "de.appplant.cordova.plugin.local-notification": "0.8.4",
+    "cordova-plugin-device": "1.1.3",
     "cordova-plugin-app-event": "1.2.0",
-    "cordova-plugin-device": "1.1.2"
+    "de.appplant.cordova.plugin.local-notification": "0.8.4"
 };
 // BOTTOM OF METADATA
 });

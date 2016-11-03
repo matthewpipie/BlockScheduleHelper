@@ -75,7 +75,7 @@ module.exports.metadata =
     "cordova-sqlite-storage": "1.4.6-pre5",
     "cordova-plugin-dialogs": "1.2.1",
     "cordova-plugin-statusbar": "2.1.3",
-    "cordova-plugin-device": "1.1.2",
+    "cordova-plugin-device": "1.1.3",
     "cordova-plugin-app-event": "1.2.0",
     "de.appplant.cordova.plugin.local-notification": "0.8.4"
 };
