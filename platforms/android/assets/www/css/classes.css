@@ -76,3 +76,7 @@ td:nth-child(odd) {
 .sp-palette-container {
     border-right: none;
 }
+
+body .sp-container > .sp-picker-container {
+    border-left: none;
+}

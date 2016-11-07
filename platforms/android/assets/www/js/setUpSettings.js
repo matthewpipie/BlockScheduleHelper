@@ -23,6 +23,7 @@ var setUpSettings = {
 
 	twelveHourTime: false,
 	pushNotifications: false,
+	themeDark: false,
 	dateformat: 0,
 	daysperweek: 7,
 	ready: false,
@@ -38,6 +39,7 @@ var setUpSettings = {
 		$('#formtoday').change(setUpSettings.verifyToday);
 		$('#formreset').on('touchend', function(ev) {if (addmenu.checkOpen()) {return} ev.preventDefault(); setUpSettings.confirmReset()});
 		$('#formreset2').on('touchend', function(ev) {if (addmenu.checkOpen()) {return} ev.preventDefault(); setUpSettings.confirmReset2()});
+		$('#formdark').change(setUpSettings.changeTheme);
 
 		var today = new Date();
 		if (today.getDay() == 6 || today.getDay() == 0) {
@@ -57,6 +59,9 @@ var setUpSettings = {
 		$("#formnotifications")[0].checked = setUpSettings.pushNotifications;
 		$("#formnotifications").flipswitch("refresh");
 
+		$("#formdark")[0].checked = setUpSettings.themeDark;
+		$("#formdark").flipswitch("refresh");
+
 		$("#formselect").val(setUpSettings.dateformat).change();
 
 		$("#formdays").val(setUpSettings.daysperweek);
@@ -66,6 +71,15 @@ var setUpSettings = {
 
 		setTimeout(setUpSettings.checkDateRan, 10);
 
+	},
+	changeTheme: function() {
+		var dark = $("#formdark")[0].checked;
+		if (dark) {
+			$("body").addClass("themeDark");
+		}
+		else {
+			$("body").removeClass("themeDark");
+		}
 	},
 
 	verifyDay: function() {
@@ -114,9 +128,12 @@ var setUpSettings = {
 		}
 	},
 
-	scheduleNextEventAndClear: function(notification, isInit) {
+	scheduleNextEventAndClear: function(notification, isInit, notify) {
 		if (isInit == undefined) {
 			isInit = false;
+		}
+		if (notify == undefined) {
+			notify = true;
 		}
 		//settimout for x minutes to wipe notifications
 		//make next notification
@@ -359,7 +376,7 @@ var setUpSettings = {
 							}*/
 
 							cordova.plugins.notification.local.schedule(scheduleObj);
-							if (isInit) {
+							if (isInit && notify) {
 								navigator.notification.alert("Notifications have been turned on.");
 							}
 
@@ -408,12 +425,14 @@ var setUpSettings = {
 		var dateformat = $("#formselect").val();
 		var daysperweek = $("#formdays").val();
 		var currentDay = $("#formtoday").val();
+		var dark = $("#formdark")[0].checked;
 
 		localforage.setItem('twelveHourTime', twelveHourTime);
 		localforage.setItem('pushNotifications', pushNotifications);
 		localforage.setItem('dateformat', parseInt(dateformat));
 		localforage.setItem('daysperweek', parseInt(daysperweek));
 		localforage.setItem('currentDay', parseInt(currentDay));
+		localforage.setItem("themeDark", dark);
 		dateConverter.setDateDay("", parseInt(currentDay) - 1);
 
 		if (pushNotifications && !(setUpSettings.pushNotifications)) {
@@ -432,6 +451,7 @@ var setUpSettings = {
 		setUpSettings.pushNotifications = pushNotifications;
 		setUpSettings.dateformat = dateformat;
 		setUpSettings.daysperweek = daysperweek;
+		setUpSettings.themeDark = dark;
 		navigator.notification.alert("Settings saved.");
 
 	},
@@ -456,12 +476,20 @@ var setUpSettings = {
 							daysperweek = 7;
 							localforage.setItem('daysperweek', daysperweek);
 						}
+						localforage.getItem('themeDark').then(function(dark) {
+							if (dark == undefined) {
+								dark = false;
+								localforage.setItem("themeDark", dark);
+							}
+							setUpSettings.twelveHourTime = twelveHourTime;
+							setUpSettings.pushNotifications = pushNotifications;
+							setUpSettings.dateformat = dateformat;
+							setUpSettings.daysperweek = daysperweek;
+							setUpSettings.ready = true;
+							setUpSettings.themeDark = dark;
+						});
 
-						setUpSettings.twelveHourTime = twelveHourTime;
-						setUpSettings.pushNotifications = pushNotifications;
-						setUpSettings.dateformat = dateformat;
-						setUpSettings.daysperweek = daysperweek;
-						setUpSettings.ready = true;
+						
 
 					});
 				});

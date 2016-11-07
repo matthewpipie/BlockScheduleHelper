@@ -38,6 +38,17 @@
 	  // this should alert "cordovaSQLiteDriver" when in an emulator or a device
 			//alert(localforage.driver());
 			storage = true;
+			
+			localforage.getItem("themeDark").then(function(dark) {
+				if (dark == undefined) {
+					dark = false;
+					localforage.setItem("themeDark", false);
+				}
+				if (dark) {
+					$("body").addClass("themeDark");
+				}
+			});
+
 			cordova.plugins.notification.local.on('trigger', function(noti, str) {console.log("triggered :O"); console.log(str); setUpSettings.scheduleNextEventAndClear(noti, false)});
 			localforage.getItem('pushNotifications').then(function(val) {
 				if (val == undefined) {
@@ -68,6 +79,7 @@
 					});
 				});
 			});
+
 			app.mainSetUp();
 		});
 	}

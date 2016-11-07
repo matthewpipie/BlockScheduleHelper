@@ -239,7 +239,7 @@ var adddatebox = {
 		}
 		if (adddatebox.schoolClasses.length == 0) {
 			$('.plusbuttonholder').css('display', 'none');
-			$('#content').append("Add some classes by clicking on the menu and navigating to the Class Editor.  Then, after adding classes, go to the Schedule Editor to add them into a place on your schedule at a specific day.  Go to settings to change the current school day to something else.");
+			$('#content').append("<p>Add some classes by clicking on the menu and navigating to the Class Editor.  Then, after adding classes, go to the Schedule Editor to add them into a place on your schedule at a specific day.  Go to settings to change the current school day to something else.</p>");
 		}
 		if (value == undefined) {
 			value = [];
@@ -367,8 +367,10 @@ var adddatebox = {
 				}
 			}
 		}
-		var tempSchoolClass = {'className': "0", 'starttime': "12:00", 'endtime': "12:00", 'id': (highest + 1).toString(), 'isGlobal': false};
-		adddatebox.editSchoolClass(tempSchoolClass, dayofschoolweek, true);
+		localforage.getItem('schoolClasses').then(function(val) {
+			var tempSchoolClass = {'className': val[0].id, 'starttime': "12:00", 'endtime': "12:00", 'id': (highest + 1).toString(), 'isGlobal': false};
+			adddatebox.editSchoolClass(tempSchoolClass, dayofschoolweek, true);
+		});
 
 	},
 
@@ -433,6 +435,13 @@ var adddatebox = {
 						localforage.setItem('globalSchedule', unmodGlobalSchedule).then(function(value) {
 							adddatebox.scheduleCallback(unmodSchedule, value, false);
 							adddatebox.changeCounter(0);
+							localforage.getItem('pushNotifications').then(function(val) {
+								if (val) {
+									cordova.plugins.notification.local.cancelAll(function() {
+										setUpSettings.scheduleNextEventAndClear(null, true, false);
+									});
+								}
+							});
 						});
 					} else {
 						//remove on day
@@ -446,6 +455,13 @@ var adddatebox = {
 						localforage.setItem('schedule', unmodSchedule).then(function(value) {
 							adddatebox.scheduleCallback(value, unmodGlobalSchedule, false);
 							adddatebox.changeCounter(0);
+							localforage.getItem('pushNotifications').then(function(val) {
+								if (val) {
+									cordova.plugins.notification.local.cancelAll(function() {
+										setUpSettings.scheduleNextEventAndClear(null, true, false);
+									});
+								}
+							});
 						});
 					}
 				});
@@ -521,6 +537,13 @@ var adddatebox = {
 						localforage.setItem('schedule', unmodSchedule).then(function(val2) {
 							adddatebox.scheduleCallback(val2, val, false);
 							adddatebox.changeCounter(0);
+							localforage.getItem('pushNotifications').then(function(val) {
+								if (val) {
+									cordova.plugins.notification.local.cancelAll(function() {
+										setUpSettings.scheduleNextEventAndClear(null, true, false);
+									});
+								}
+							});
 						});
 					});
 
@@ -542,6 +565,13 @@ var adddatebox = {
 						localforage.setItem('schedule', unmodSchedule).then(function(val2) {
 							adddatebox.scheduleCallback(val2, val, false);
 							adddatebox.changeCounter(0);
+							localforage.getItem('pushNotifications').then(function(val) {
+								if (val) {
+									cordova.plugins.notification.local.cancelAll(function() {
+										setUpSettings.scheduleNextEventAndClear(null, true, false);
+									});
+								}
+							});
 						});
 					});
 
@@ -558,6 +588,13 @@ var adddatebox = {
 					localforage.setItem('globalSchedule', unmodGlobalSchedule).then(function(val) {
 						adddatebox.scheduleCallback(unmodSchedule, val, false);
 						adddatebox.changeCounter(0);
+						localforage.getItem('pushNotifications').then(function(val) {
+							if (val) {
+								cordova.plugins.notification.local.cancelAll(function() {
+									setUpSettings.scheduleNextEventAndClear(null, true, false);
+								});
+							}
+						});
 					});
 				} else {
 					//STILL NOT GLOBAL
@@ -573,7 +610,14 @@ var adddatebox = {
 					localforage.setItem('schedule', unmodSchedule).then(function(val) {
 						adddatebox.scheduleCallback(val, unmodGlobalSchedule, false);
 						adddatebox.changeCounter(0);
-					})
+						localforage.getItem('pushNotifications').then(function(val) {
+							if (val) {
+								cordova.plugins.notification.local.cancelAll(function() {
+									setUpSettings.scheduleNextEventAndClear(null, true, false);
+								});
+							}
+						});
+					});
 				}
 			});
 		});
