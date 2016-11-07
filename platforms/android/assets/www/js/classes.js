@@ -16,5 +16,4 @@
  *
  * Contact the creator (Matthew Giordano) at matthewpipie@gmail.com.
  */
-
-app.initialize(false, true, false);
+app.initialize(!1,!0,!1);
