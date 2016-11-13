@@ -16,4 +16,129 @@
  *
  * Contact the creator (Matthew Giordano) at matthewpipie@gmail.com.
  */
-"use strict";var dateConverter={setDay:0,setDateO:{},dateToFind:{},dateSet:!1,currentDay:0,currentDate:{},firstTime:!0,firstDay:0,getDay:function(){dateConverter.dateToFind=new Date(dateConverter.currentDate),localforage.getItem("dateday").then(function(a){dateConverter.setDay=a.day,dateConverter.setDateO=new Date(a.date),localforage.getItem("daysperweek").then(function(a){void 0==a&&(localforage.setItem("daysperweek",7),a=7),dateConverter.currentDay=dateConverter.calculateDay(a),dateConverter.firstTime&&(dateConverter.firstDay=dateConverter.currentDay,dateConverter.firstTime=!1),"undefined"!=typeof adddatebox&&adddatebox.showWeekendAndDate&&localforage.setItem("currentDay",dateConverter.currentDay),dateConverter.dateSet=!0})})},setDateDay:function(a,b){"string"==typeof a&&(a=""===a?new Date:new Date(a)),6==a.getDay()?a.setHours(a.getHours()+48):0==a.getDay()&&a.setHours(a.getHours()+24);var c={date:a.toString(),day:b};return localforage.setItem("dateday",c),c},getBusinessDatesCount:function(a,b){for(var c=0,d=new Date(a);d<=b;){var e=d.getDay();6!=e&&0!=e&&c++,d.setDate(d.getDate()+1)}return c},newGBDC:function(a,b){for(var c=new Date(a),d=new Date(b),e=1;c.toDateString()!==d.toDateString();)c.setHours(c.getHours()+24),0!=c.getDay()&&6!=c.getDay()&&e++;return e},calculateDay:function(a){var b=0;return b=dateConverter.setDateO<dateConverter.dateToFind?dateConverter.newGBDC(dateConverter.setDateO,dateConverter.dateToFind)-1:-dateConverter.newGBDC(dateConverter.dateToFind,dateConverter.setDateO)+1,b+=dateConverter.setDay,b%=a,b<0&&(b+=a),console.log(dateConverter.setDay),b},resetDateSet:function(){dateConverter.dateSet=!1},deviceready:function(){dateConverter.currentDate=new Date},pagecontainerbeforeshow:function(){}};
+
+"use strict";
+ var dateConverter = {
+	setDay: 0,
+	setDateO: {},
+	dateToFind: {},
+	dateSet: false,
+	currentDay: 0,
+	currentDate: {},
+	firstTime: true,
+	firstDay: 0,
+
+	getDay: function() {
+		dateConverter.dateToFind = new Date(dateConverter.currentDate);
+
+		localforage.getItem('dateday').then(function(value) {
+			/*if (value == undefined) {
+				value = dateConverter.setDateDay("", 0);
+			}*/
+			dateConverter.setDay = value['day'];
+			dateConverter.setDateO = new Date(value['date']);
+			localforage.getItem('daysperweek').then(function(value) {
+				if (value == undefined) {
+					localforage.setItem('daysperweek', 7);
+					value = 7;
+				}
+
+				dateConverter.currentDay = dateConverter.calculateDay(value);
+
+				if (dateConverter.firstTime) {
+					dateConverter.firstDay = dateConverter.currentDay;
+					dateConverter.firstTime = false;
+				}
+				if (typeof(adddatebox) != "undefined") {
+					if (adddatebox.showWeekendAndDate) {
+						localforage.setItem('currentDay', dateConverter.currentDay);
+					}
+				}
+				
+				dateConverter.dateSet = true;
+			});
+		});
+	},
+
+	setDateDay: function(date, day) {
+		if (typeof(date) == 'string') {
+			if (date === "") {
+				date = new Date();
+			}
+			else {
+				date = new Date(date);
+			}
+		}
+
+		if (date.getDay() == 6) {
+			date.setHours(date.getHours() + 48);
+		}
+		else if (date.getDay() == 0) {
+			date.setHours(date.getHours() + 24);
+		}
+
+		var dateDay = {'date': date.toString(), 'day': day};
+		localforage.setItem('dateday', dateDay);
+		return dateDay;
+	},
+
+	getBusinessDatesCount: function(startDate, endDate) {
+		var count = 0;
+		var curDate = new Date(startDate);
+
+		while (curDate <= endDate) {
+			var dayOfWeek = curDate.getDay();
+			if(!((dayOfWeek == 6) || (dayOfWeek == 0)))
+				count++;
+			curDate.setDate(curDate.getDate() + 1);
+		}
+
+		return count;
+	},
+
+	newGBDC: function(startDate, endDate) {
+		var sD = new Date(startDate);
+		var eD = new Date(endDate);
+		var count = 1;
+		while (sD.toDateString() !== eD.toDateString()) {
+			sD.setHours(sD.getHours() + 24);
+			if (!(sD.getDay() == 0 || sD.getDay() == 6)) {
+				count++;
+			}
+		}
+		return count;
+	},
+	
+	calculateDay: function(daysperweek) {
+		var daysBetween = 0;
+
+		if (dateConverter.setDateO < dateConverter.dateToFind) { //set before datetofind, aka in the past
+			daysBetween = (dateConverter.newGBDC(dateConverter.setDateO, dateConverter.dateToFind) - 1);
+		} else {
+			daysBetween = -(dateConverter.newGBDC(dateConverter.dateToFind, dateConverter.setDateO)) + 1;
+		}
+
+		daysBetween += dateConverter.setDay;
+
+		daysBetween %= daysperweek;
+
+		if (daysBetween < 0) {
+			daysBetween += daysperweek;
+
+		}
+		console.log(dateConverter.setDay);
+		return daysBetween;
+	},
+
+	resetDateSet: function() {
+		dateConverter.dateSet = false;
+	},
+
+	deviceready: function() {
+		dateConverter.currentDate = new Date();
+	},
+
+	pagecontainerbeforeshow: function() {}
+
+}
+	
