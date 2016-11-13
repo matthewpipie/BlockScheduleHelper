@@ -63,8 +63,11 @@ var setUpSettings = {
 		$("#formnotifications")[0].checked = setUpSettings.pushNotifications;
 		$("#formnotifications").flipswitch("refresh");
 
-		$("#formdark")[0].checked = setUpSettings.themeDark;
+		$("#formdark")[0].checked = (setUpSettings.themeDark > 0);
 		$("#formdark").flipswitch("refresh");
+
+		$("#formdarkclasses")[0].checked = (setUpSettings.themeDark > 1);
+		$("#formdarkclasses").flipswitch("refresh");
 
 		$("#formselect").val(setUpSettings.dateformat).change();
 

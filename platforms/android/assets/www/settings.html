@@ -22,7 +22,7 @@
 <html>
 
 <head>
-	<meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' http://* 'unsafe-inline'; script-src 'self' http://* 'unsafe-inline' 'unsafe-eval'" />
+	<meta http-equiv="Content-Security-Policy" content="default-src * gap://ready 'self'; style-src 'self' http://* 'unsafe-inline'; script-src 'self' http://* 'unsafe-inline' 'unsafe-eval'" />
 	<meta name="format-detection" content="telephone=no" />
 	<meta name="msapplication-tap-highlight" content="no" />
 	<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
@@ -62,10 +62,10 @@
 			<div data-role="content" id="content">
 				<form>
 					<ul id="mainform">	
-						<li>12-Hour Time: <input type="checkbox" data-role="flipswitch" id="formtime" data-on-text="Yes" data-off-text="No" /></li>
-						<li>Push Notifications: <input type="checkbox" data-role="flipswitch" id="formnotifications" data-on-text="Yes" data-off-text="No" /></li>
-						<li>Dark Theme: <input type="checkbox" data-role="flipswitch" id="formdark" data-on-text="On" data-off-text="Off" /></li>
-						<li id="invert-class-colors" class="hidden">Invert Class Colors: <input type="checkbox" data-role="flipswitch" id="formdarkclasses" data-on-text="On" data-off-text="Off" /></li>
+						<li>12-Hour Time: <input type="checkbox" data-role="flipswitch" id="formtime" /></li>
+						<li>Push Notifications: <input type="checkbox" data-role="flipswitch" id="formnotifications" /></li>
+						<li>Dark Theme: <input type="checkbox" data-role="flipswitch" id="formdark" /></li>
+						<li id="invert-class-colors" class="hidden">Invert Class Colors: <input type="checkbox" data-role="flipswitch" id="formdarkclasses" /></li>
 						<li class="oneline">Date Format: <select id="formselect">
 								<option value=0>m/d</option>
 								<option value=1>d/m</option>
