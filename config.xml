@@ -27,12 +27,12 @@
         <preference name="StatusBarBackgroundColor" value="#e9e9e9" />
         <preference name="StatusBarStyle" value="default" />
     </platform>
-	<preference name="DisallowOverscroll" value="true" />
+    <preference name="DisallowOverscroll" value="true" />
     <engine name="android" spec="~5.2.1" />
-    <engine name="ios" spec="~4.2.0" />
     <plugin name="cordova-plugin-whitelist" spec="1" />
     <plugin name="cordova-sqlite-storage" spec="https://github.com/litehelpers/Cordova-sqlite-storage.git" />
     <plugin name="cordova-plugin-dialogs" spec="~1.2.1" />
     <plugin name="cordova-plugin-statusbar" spec="~2.1.3" />
     <plugin name="de.appplant.cordova.plugin.local-notification" spec="https://github.com/EddyVerbruggen/cordova-plugin-local-notifications" />
+    <engine name="ios" spec="~4.2.1" />
 </widget>
