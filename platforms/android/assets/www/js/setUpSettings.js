@@ -16,4 +16,552 @@
  *
  * Contact the creator (Matthew Giordano) at matthewpipie@gmail.com.
  */
-"use strict";var timeouts=[],PRESET_URL="https://matthewpipie.github.io/presets.json",setUpSettings={twelveHourTime:!1,pushNotifications:!1,themeDark:!1,dateformat:0,daysperweek:7,ready:!1,day:!1,presets:[],pagecontainerbeforeshow:function(){},deviceready:function(){setUpSettings.loadSettings(),setUpSettings.updateSettings(),$("#formsubmit").on("touchend",function(a){addmenu.checkOpen()||(a.preventDefault(),setUpSettings.handleSubmit())}),$("#formdays").change(setUpSettings.verifyDay),$("#formtoday").change(setUpSettings.verifyToday),$("#formreset").on("touchend",function(a){addmenu.checkOpen()||(a.preventDefault(),setUpSettings.confirmReset())}),$("#formreset2").on("touchend",function(a){addmenu.checkOpen()||(a.preventDefault(),setUpSettings.confirmReset2())}),$("#formdark").change(setUpSettings.changeTheme),setUpSettings.loadPresets(),$("#formpresetsubmit").on("touchend",function(a){addmenu.checkOpen()||(a.preventDefault(),setUpSettings.confirmPreset())});var a=new Date;6!=a.getDay()&&0!=a.getDay()||$("#mondayOrToday").text("Monday")},updateSettings:function(){return setUpSettings.ready?($("#formtime")[0].checked=setUpSettings.twelveHourTime,$("#formtime").flipswitch("refresh"),$("#formnotifications")[0].checked=setUpSettings.pushNotifications,$("#formnotifications").flipswitch("refresh"),$("#formdark")[0].checked=setUpSettings.themeDark>0,$("#formdark").flipswitch("refresh"),$("#formdarkclasses")[0].checked=setUpSettings.themeDark>1,$("#formdarkclasses").flipswitch("refresh"),$("#formselect").val(setUpSettings.dateformat).change(),$("#formdays").val(setUpSettings.daysperweek),dateConverter.currentDate=new Date,dateConverter.getDay(),void setTimeout(setUpSettings.checkDateRan,10)):void setTimeout(setUpSettings.updateSettings,10)},loadPresets:function(){$("#formpreset").append("<option class='preset loadingPlaceholder' selected value=0>Loading...</option>"),$.ajax({url:PRESET_URL,type:"GET",dataType:"json",cache:!1,success:function(a){$(".loadingPlaceholder").remove(),setUpSettings.presets=a;for(var b=0;b<a.length;b++)$("#formpreset").append("<option class='preset' value="+b+">"+a[b].name+"</option>");$(".preset")[0].selected=!0,$("#formpreset").selectmenu("refresh")}})},confirmPreset:function(){localforage.getItem("schoolClasses").then(function(a){if(setUpSettings.presets.length)if(a.length)navigator.notification.alert("You must erase everything before loading a preset.");else{var b=$("#formpreset").val();localforage.setItem("dateday",setUpSettings.presets[b].dateday),localforage.setItem("daysperweek",setUpSettings.presets[b].schedule.length),localforage.setItem("schoolClasses",setUpSettings.presets[b].schoolClasses),localforage.setItem("schedule",setUpSettings.presets[b].schedule),localforage.setItem("globalSchedule",setUpSettings.presets[b].globalSchedule),navigator.notification.alert("The selected preset was loaded.  Go into Class Editor to customize your schedule further.",function(){window.location="index.html"})}else navigator.notification.alert("Error: No presets loaded.  Ensure you are connected to the internet, and try again later.")})},changeTheme:function(){var a=$("#formdark")[0].checked;a?($("body").addClass("themeDark"),$("#invert-class-colors").removeClass("hidden")):($("body").removeClass("themeDark"),$("#invert-class-colors").addClass("hidden"))},verifyDay:function(){$("#formdays").val()&&$("#formdays").val()==parseInt($("#formdays").val())?parseInt($("#formdays").val())<1&&$("#formdays").val(1):$("#formdays").val(7),setUpSettings.verifyToday()},verifyToday:function(){var a=parseInt($("#formdays").val()),b=parseInt($("#formtoday").val());$("#formtoday").val()&&$("#formtoday").val()==parseInt($("#formtoday").val())||(b=1),b>a&&(b%=a),b<1&&(b=a),$("#formtoday").val(b)},confirmReset:function(){navigator.notification.confirm("Are you sure you would like to delete your schedule?  This can NOT be undone.",setUpSettings.handleReset,"Reset Schedule")},confirmReset2:function(){navigator.notification.confirm("Are you sure you would like to delete your schedule and all of your classes?  This can NOT be undone.",setUpSettings.handleReset2,"Reset Everything")},handleReset:function(a){1==a&&(localforage.setItem("schedule",[]),localforage.setItem("globalSchedule",[]),navigator.notification.alert("Schedule deleted."))},handleReset2:function(a){1==a&&(localforage.setItem("schedule",[]),localforage.setItem("globalSchedule",[]),localforage.setItem("schoolClasses",[]),navigator.notification.alert("Schedule and classes deleted."))},scheduleNextEventAndClear:function(a,b,c){void 0==b&&(b=!1),void 0==c&&(c=!0),localforage.getItem("schoolClasses").then(function(a){localforage.getItem("schedule").then(function(d){localforage.getItem("globalSchedule").then(function(e){localforage.getItem("daysperweek").then(function(f){localforage.getItem("dateday").then(function(g){void 0==a&&(a=[],localforage.setItem("schoolClasses",a)),void 0==d&&(d=[],localforage.setItem("schedule",d)),void 0==e&&(e=[],localforage.setItem("globalSchedule",e)),void 0==f&&(f=7,localforage.setItem("daysperweek",f)),void 0==g&&(g={date:(new Date).toString(),day:0});for(var h=new Date,i=0;i<timeouts.length;i++)clearTimeout(timeouts[i]);var j=setUpSettings.calculateDay(g,f,new Date);void 0==d[j]&&(d[j]=[]);for(var k=[],l=0;l<d[j].length;l++){var m=d[j][l].starttime;m=60*parseInt(m.substr(0,2))+parseInt(m.substr(3));var n=d[j][l].endtime;n=60*parseInt(n.substr(0,2))+parseInt(n.substr(3)),k.push({id:d[j][l].id,starttime:m,endtime:n,isGlobal:!1})}for(var i=0;i<e.length;i++){var m=e[i].starttime;m=60*parseInt(m.substr(0,2))+parseInt(m.substr(3));var n=e[i].endtime;n=60*parseInt(n.substr(0,2))+parseInt(n.substr(3)),k.push({id:e[i].id,starttime:m,endtime:n,isGlobal:!0})}var r,i,l,o=k.sort(function(a,b){return parseInt(a.starttime,10)-parseInt(b.starttime,10)}),p=k.sort(function(a,b){return parseInt(a.endtime,10)-parseInt(b.endtime,10)}),q=60*h.getHours()+h.getMinutes(),s=!0,t=!1,u=!1,v=!1;for(i=q;i<1439;i++)if(o.filter(function(a){return a.starttime==i}).length){if(t){u=!0;break}r=i,t=!0}else;if(t||(s=!1),b){var w=o.filter(function(a){return a.starttime<q&&a.endtime>q});(r-q>10||0!=w.length)&&(i=r,u=!0),6!=h.getDay()&&0!=h.getDay()||(s=!1)}if(u||(s=!1),b&&r-q>10)l=i-10,v=!0;else for(l=i;l>=0;l--)if(p.filter(function(a){return a.endtime==l}).length){v=!0;break}v||(s=!1);var x,y,z,A=new Date;if(s)x=i,y=l,x-y>10&&(y=x-10),z=o.filter(function(a){return a.starttime==x})[0],A.setHours(0),A.setSeconds(0),A.setMilliseconds(0),A.setMinutes(y);else{console.log("no bueno");var B=new Date;B.setHours(B.getHours()+24),j=setUpSettings.calculateDay(g,f,B);var D,C=!1;for(D=1;D<29;D++){if(console.log(j),console.log(B),void 0==d[j]&&(d[j]=[]),0!=d[j].length&&B.getDay()<6&&B.getDay()>0){console.log("we out fam"),C=!0;break}console.log("stuck in eternal poo"),B.setHours(B.getHours()+24),j=setUpSettings.calculateDay(g,f,B)}if(!C)return $("#formnotifications")[0].checked=!1,$("#formnotifications").flipswitch("refresh"),navigator.notification.alert("Error: Please create a schedule first."),void setUpSettings.handleSubmit();k=[];for(var l=0;l<d[j].length;l++){var m=d[j][l].starttime;m=60*parseInt(m.substr(0,2))+parseInt(m.substr(3));var n=d[j][l].endtime;n=60*parseInt(n.substr(0,2))+parseInt(n.substr(3)),k.push({id:d[j][l].id,starttime:m,endtime:n,isGlobal:!1})}for(var i=0;i<e.length;i++){var m=e[i].starttime;m=60*parseInt(m.substr(0,2))+parseInt(m.substr(3));var n=e[i].endtime;n=60*parseInt(n.substr(0,2))+parseInt(n.substr(3)),k.push({id:e[i].id,starttime:m,endtime:n,isGlobal:!0})}if(o=k.sort(function(a,b){return parseInt(a.starttime,10)-parseInt(b.starttime,10)}),console.log(o),0==o.length)return;x=o[0].starttime,console.log(x),y=x-10,z=o[0],A=B,A.setHours(0),A.setSeconds(0),A.setMilliseconds(0),A.setMinutes(y),q=-(1440*D)}z=z.isGlobal?e.filter(function(a){return a.id==z.id})[0]:d[j].filter(function(a){return a.id==z.id})[0];var E=setUpSettings.findClass(a,z.className,"bgcolor");console.log(A);var F="Next class: "+setUpSettings.findClass(a,z.className,"className")+(""==setUpSettings.findClass(a,z.className,"room")?"":" ("+setUpSettings.findClass(a,z.className,"room")+")"),G="Starts in "+(x-y).toString()+" minutes";h.toDateString()!=A.toDateString()&&(G=F+" in 10",F="Today is day "+(parseInt(j)+1).toString());var H={id:0,title:F,text:G,at:A,led:null==E?"FFFFFF":E.substr(1)};console.log(H),console.log(x),console.log(x-q),cordova.plugins.notification.local.schedule(H),b&&c&&navigator.notification.alert("Notifications have been turned on.")})})})})})},findClass:function(a,b,c){for(var d=0;d<a.length;d++)if(a[d].id==b)return a[d][c]},calculateDay:function(a,b,c){var d=0,e=new Date(a.date),f=a.day;return d=e<c?dateConverter.newGBDC(e,c)-1:-dateConverter.newGBDC(c,e)+1,d+=f,d%=b,d<0&&(d+=b),d},handleSubmit:function(){console.log("saving"),setUpSettings.verifyDay();var a=$("#formtime")[0].checked,b=$("#formnotifications")[0].checked,c=$("#formselect").val(),d=$("#formdays").val(),e=$("#formtoday").val(),f=+$("#formdark")[0].checked;f&&$("#formdarkclasses")[0].checked&&(f=2),localforage.setItem("twelveHourTime",a),localforage.setItem("pushNotifications",b),localforage.setItem("dateformat",parseInt(c)),localforage.setItem("daysperweek",parseInt(d)),localforage.setItem("currentDay",parseInt(e)),localforage.setItem("themeDark",f),dateConverter.setDateDay("",parseInt(e)-1),b&&!setUpSettings.pushNotifications?cordova.plugins.notification.local.cancelAll(function(){setUpSettings.scheduleNextEventAndClear(null,!0)}):!b&&setUpSettings.pushNotifications&&cordova.plugins.notification.local.cancelAll(function(){navigator.notification.alert("Notifications have been turned off.")}),setUpSettings.twelveHourTime=a,setUpSettings.pushNotifications=b,setUpSettings.dateformat=c,setUpSettings.daysperweek=d,setUpSettings.themeDark=f,navigator.notification.alert("Settings saved.")},loadSettings:function(){localforage.getItem("twelveHourTime").then(function(a){void 0==a&&(a=!1,localforage.setItem("twelveHourTime",a)),localforage.getItem("pushNotifications").then(function(b){void 0==b&&(b=!1,localforage.setItem("pushNotifications",b)),localforage.getItem("dateformat").then(function(c){void 0==c&&(c=0,localforage.setItem("dateformat",c)),localforage.getItem("daysperweek").then(function(d){void 0==d&&(d=7,localforage.setItem("daysperweek",d)),localforage.getItem("themeDark").then(function(e){void 0==e&&(e=!1,localforage.setItem("themeDark",e)),setUpSettings.twelveHourTime=a,setUpSettings.pushNotifications=b,setUpSettings.dateformat=c,setUpSettings.daysperweek=d,setUpSettings.ready=!0,setUpSettings.themeDark=e})})})})})},checkDateRan:function(){if(dateConverter.firstTime)return void setTimeout(setUpSettings.checkDateRan,10);var a=1;6!=(new Date).getDay()&&0!=(new Date).getDay()||(a=2),$("#formtoday").val(dateConverter.firstDay+a),setUpSettings.verifyToday(),setUpSettings.day=dateConverter.firstDay}};
+
+"use strict";
+var timeouts = [];
+var PRESET_URL = "https://matthewpipie.github.io/presets.json";
+var setUpSettings = {
+
+	twelveHourTime: false,
+	pushNotifications: false,
+	themeDark: false,
+	dateformat: 0,
+	daysperweek: 7,
+	ready: false,
+	day: false,
+	presets: [],
+
+	pagecontainerbeforeshow: function() {
+	},
+	deviceready: function() {
+		setUpSettings.loadSettings();
+		setUpSettings.updateSettings();
+		$('#formsubmit').on('touchend', function(ev) {if (addmenu.checkOpen()) {return} ev.preventDefault(); setUpSettings.handleSubmit()});
+		$('#formdays').change(setUpSettings.verifyDay);
+		$('#formtoday').change(setUpSettings.verifyToday);
+		$('#formreset').on('touchend', function(ev) {if (addmenu.checkOpen()) {return} ev.preventDefault(); setUpSettings.confirmReset()});
+		$('#formreset2').on('touchend', function(ev) {if (addmenu.checkOpen()) {return} ev.preventDefault(); setUpSettings.confirmReset2()});
+		$('#formdark').change(setUpSettings.changeTheme);
+		setUpSettings.loadPresets();
+		$('#formpresetsubmit').on('touchend', function(ev) {if (addmenu.checkOpen()) {return} ev.preventDefault(); setUpSettings.confirmPreset()});
+
+		var today = new Date();
+		if (today.getDay() == 6 || today.getDay() == 0) {
+			$("#mondayOrToday").text("Monday");
+		}
+
+	},
+
+	updateSettings: function() {
+		if (!setUpSettings.ready) {
+			setTimeout(setUpSettings.updateSettings, 10);
+			return;
+		}
+		$("#formtime")[0].checked = setUpSettings.twelveHourTime;
+		$("#formtime").flipswitch("refresh");
+
+		$("#formnotifications")[0].checked = setUpSettings.pushNotifications;
+		$("#formnotifications").flipswitch("refresh");
+
+		$("#formdark")[0].checked = (setUpSettings.themeDark > 0);
+		$("#formdark").flipswitch("refresh");
+
+		$("#formdarkclasses")[0].checked = (setUpSettings.themeDark > 1);
+		$("#formdarkclasses").flipswitch("refresh");
+
+		$("#formselect").val(setUpSettings.dateformat).change();
+
+		$("#formdays").val(setUpSettings.daysperweek);
+		
+		dateConverter.currentDate = new Date();
+		dateConverter.getDay();
+
+		setTimeout(setUpSettings.checkDateRan, 10);
+
+	},
+	loadPresets: function() {
+		$("#formpreset").append("<option class='preset loadingPlaceholder' selected value=0>Loading...</option>");
+		$.ajax({
+			url: PRESET_URL,
+		    type: 'GET',
+		    dataType: 'json',
+		    cache: false, // Appends _={timestamp} to the request query string
+		    success: function( presets ) {
+		        $(".loadingPlaceholder").remove();
+				setUpSettings.presets = presets;
+				for (var i = 0; i < presets.length; i++) {
+					$("#formpreset").append("<option class='preset' value=" + i + ">" + presets[i].name + "</option>");
+				}
+				$(".preset")[0].selected = true;
+				$("#formpreset").selectmenu("refresh");
+		    }
+		});
+	},
+
+	confirmPreset: function() {
+		localforage.getItem("schoolClasses").then(function(value) {
+			if (setUpSettings.presets.length) {
+				if (value == undefined || !value.length) {
+					var preset = $("#formpreset").val();
+					localforage.setItem("dateday", setUpSettings.presets[preset].dateday);
+					localforage.setItem("daysperweek", setUpSettings.presets[preset].schedule.length);
+					localforage.setItem("schoolClasses", setUpSettings.presets[preset].schoolClasses);
+					localforage.setItem("schedule", setUpSettings.presets[preset].schedule);
+					localforage.setItem("globalSchedule", setUpSettings.presets[preset].globalSchedule);
+					navigator.notification.alert("The selected preset was loaded.  Go into Class Editor to customize your schedule further.", function() {window.location = "index.html";});
+				}
+				else {
+					navigator.notification.alert("You must erase everything before loading a preset.");
+				}
+			}
+			else {
+				navigator.notification.alert("Error: No presets loaded.  Ensure you are connected to the internet, and try again later.");
+			}
+		});
+	},
+	changeTheme: function() {
+		var dark = $("#formdark")[0].checked;
+		if (dark) {
+			$("body").addClass("themeDark");
+			$("#invert-class-colors").removeClass("hidden");
+		}
+		else {
+			$("body").removeClass("themeDark");
+			$("#invert-class-colors").addClass("hidden");
+		}
+	},
+
+	verifyDay: function() {
+		if (!$("#formdays").val() || $("#formdays").val() != parseInt($("#formdays").val())) {
+			$("#formdays").val(7);
+		}
+		else if (parseInt($("#formdays").val()) < 1) {
+			$("#formdays").val(1);
+		}
+		setUpSettings.verifyToday();
+	},
+	verifyToday: function() {
+		var daysperweek = parseInt($("#formdays").val());
+		var currentDay = parseInt($("#formtoday").val());
+		if (!$("#formtoday").val() || $("#formtoday").val() != parseInt($("#formtoday").val())) {
+			currentDay = 1;
+		}
+		if (currentDay > daysperweek) {
+			currentDay %= daysperweek;
+		}
+		if (currentDay < 1) {
+			currentDay = daysperweek;
+		}
+		$('#formtoday').val(currentDay);
+	},
+
+	confirmReset: function() {
+		navigator.notification.confirm("Are you sure you would like to delete your schedule?  This can NOT be undone.", setUpSettings.handleReset, "Reset Schedule");
+	},
+	confirmReset2: function() {
+		navigator.notification.confirm("Are you sure you would like to delete your schedule and all of your classes?  This can NOT be undone.", setUpSettings.handleReset2, "Reset Everything");
+	},
+	handleReset: function(buttonIndex) {
+		if (buttonIndex == 1) {
+			localforage.setItem('schedule', []);
+			localforage.setItem('globalSchedule', []);
+			navigator.notification.alert("Schedule deleted.");
+		}
+	},
+	handleReset2: function(buttonIndex) {
+		if (buttonIndex == 1) {
+			localforage.setItem('schedule', []);
+			localforage.setItem('globalSchedule', []);
+			localforage.setItem('schoolClasses', []);
+			navigator.notification.alert("Schedule and classes deleted.");
+		}
+	},
+
+	scheduleNextEventAndClear: function(notification, isInit, notify) {
+		if (isInit == undefined) {
+			isInit = false;
+		}
+		if (notify == undefined) {
+			notify = true;
+		}
+		//settimout for x minutes to wipe notifications
+		//make next notification
+		localforage.getItem('schoolClasses').then(function(schoolClasses) {
+			localforage.getItem('schedule').then(function(schedule) {
+				localforage.getItem('globalSchedule').then(function(globalSchedule) {
+					localforage.getItem('daysperweek').then(function(daysperweek) {
+						localforage.getItem('dateday').then(function(dateday) {
+							if (schoolClasses == undefined) {
+								schoolClasses = [];
+								localforage.setItem('schoolClasses', schoolClasses);
+							}
+							if (schedule == undefined) {
+								schedule = [];
+								localforage.setItem('schedule', schedule);
+							}
+							if (globalSchedule == undefined) {
+								globalSchedule = [];
+								localforage.setItem('globalSchedule', globalSchedule);
+							}
+							if (daysperweek == undefined) {
+								daysperweek = 7;
+								localforage.setItem('daysperweek', daysperweek);
+							}
+							if (dateday == undefined) {
+								dateday = {'date': new Date().toString(), 'day': 0};
+							}
+
+							var now = new Date();
+
+							for (var i = 0; i < timeouts.length; i++) {
+								clearTimeout(timeouts[i]);
+							}
+
+							var day = setUpSettings.calculateDay(dateday, daysperweek, new Date());
+							if (schedule[day] == undefined) {
+								schedule[day] = [];
+							}
+
+							var timeAndId = []; //{id: '5', starttime: 13546, endtime: 15493, isGlobal: false}
+							for (var j = 0; j < schedule[day].length; j++) {
+								var starttime = schedule[day][j]['starttime'];
+								starttime = parseInt(starttime.substr(0, 2)) * 60 + parseInt(starttime.substr(3));
+								var endtime = schedule[day][j]['endtime'];
+								endtime = parseInt(endtime.substr(0, 2)) * 60 + parseInt(endtime.substr(3));
+								timeAndId.push({'id': schedule[day][j]['id'], 'starttime': starttime, 'endtime': endtime, 'isGlobal': false});
+							}
+							for (var i = 0; i < globalSchedule.length; i++) {
+								var starttime = globalSchedule[i]['starttime'];
+								starttime = parseInt(starttime.substr(0, 2)) * 60 + parseInt(starttime.substr(3));
+								var endtime = globalSchedule[i]['endtime'];
+								endtime = parseInt(endtime.substr(0, 2)) * 60 + parseInt(endtime.substr(3));
+								timeAndId.push({'id': globalSchedule[i]['id'], 'starttime': starttime, 'endtime': endtime, 'isGlobal': true});
+							}
+							var starttimeSorted = timeAndId.sort(function(a, b) {return parseInt(a['starttime'], 10) - parseInt(b['starttime'], 10);})
+							var endtimeSorted = timeAndId.sort(function(a, b) {return parseInt(a['endtime'], 10) - parseInt(b['endtime'], 10);})
+							
+							var nowTime = now.getHours() * 60 + now.getMinutes();
+
+
+							var firstStartTime;
+							var isRegular = true;
+							var hasfound1 = false;
+							var hasfound2 = false;
+							var hasfound3 = false;
+							var i;
+							var j;
+							for (i = nowTime; i < 1439; i++) {
+								if (starttimeSorted.filter(function(a) {return a['starttime'] == i}).length) {
+									if (!hasfound1) {firstStartTime = i; hasfound1 = true; continue;}
+									else {
+										hasfound2 = true;
+										break;
+									}
+								}
+							}
+
+							if (!hasfound1) {
+								isRegular = false;
+							}
+
+							if (isInit) {
+								var results = starttimeSorted.filter(function(a) {return a['starttime'] < nowTime && a['endtime'] > nowTime});
+
+								if (firstStartTime - nowTime > 10 || results.length != 0) {
+									//schedule aft
+									i = firstStartTime;
+									hasfound2 = true;
+								}
+								if (now.getDay() == 6 || now.getDay() == 0) {
+									isRegular = false;
+								}
+
+								/* get closest ahead starttime and endtime before it
+								if greater than 10 mins from now till next starttime AND isInit
+								if less,
+									if you are in a class AND isInit, schedule
+									if not, skip one starttime and schedule then*/
+
+							}
+							
+							if (!hasfound2) {
+								isRegular = false;
+							}
+
+							if (isInit && firstStartTime - nowTime > 10) {
+								j = i - 10;
+								hasfound3 = true;
+							}
+							else {
+								for (j = i; j >= 0; j--) {
+									if (endtimeSorted.filter(function(a) {return a['endtime'] == j}).length) {
+										hasfound3 = true;
+										break;
+									}
+								}
+							}
+
+							
+
+							if (!hasfound3) {
+								isRegular = false;
+							}
+							var timeToClear;
+							var timeToNotify;
+							var classToNotify;
+							var dateToNotify = new Date();
+							if (isRegular) {
+								timeToClear = i;
+								timeToNotify = j;
+								if (timeToClear - timeToNotify > 10) {
+									timeToNotify = timeToClear - 10;
+								}
+								classToNotify = starttimeSorted.filter(function(a) {return a['starttime'] == timeToClear})[0];
+								dateToNotify.setHours(0);
+								dateToNotify.setSeconds(0);
+								dateToNotify.setMilliseconds(0);
+								dateToNotify.setMinutes(timeToNotify);
+							}
+							else {
+								console.log('no bueno');
+								var newDate = new Date();
+								newDate.setHours(newDate.getHours() + 24);
+								day = setUpSettings.calculateDay(dateday, daysperweek, newDate);
+								var out = false;
+								var k;
+								for (k = 1; k < 29; k++) {
+									console.log(day);
+										console.log(newDate);
+									if (schedule[day] == undefined) {
+										schedule[day] = [];
+									}
+									if (schedule[day].length != 0 && newDate.getDay() < 6 && newDate.getDay() > 0) {
+										console.log('we out fam');
+										out = true;
+										break;
+									}
+									else {
+										console.log('stuck in eternal poo');
+
+										newDate.setHours(newDate.getHours() + 24);
+										day = setUpSettings.calculateDay(dateday, daysperweek, newDate);
+									}
+								}
+
+								if (!out) {
+									$("#formnotifications")[0].checked = false;
+									$("#formnotifications").flipswitch("refresh");
+									navigator.notification.alert("Error: Please create a schedule first.");
+									setUpSettings.handleSubmit();
+									return;
+								}
+
+								timeAndId = []; //{id: '5', starttime: 13546, endtime: 15493, isGlobal: false}
+								for (var j = 0; j < schedule[day].length; j++) {
+									var starttime = schedule[day][j]['starttime'];
+									starttime = parseInt(starttime.substr(0, 2)) * 60 + parseInt(starttime.substr(3));
+									var endtime = schedule[day][j]['endtime'];
+									endtime = parseInt(endtime.substr(0, 2)) * 60 + parseInt(endtime.substr(3));
+									timeAndId.push({'id': schedule[day][j]['id'], 'starttime': starttime, 'endtime': endtime, 'isGlobal': false});
+								}
+								for (var i = 0; i < globalSchedule.length; i++) {
+									var starttime = globalSchedule[i]['starttime'];
+									starttime = parseInt(starttime.substr(0, 2)) * 60 + parseInt(starttime.substr(3));
+									var endtime = globalSchedule[i]['endtime'];
+									endtime = parseInt(endtime.substr(0, 2)) * 60 + parseInt(endtime.substr(3));
+									timeAndId.push({'id': globalSchedule[i]['id'], 'starttime': starttime, 'endtime': endtime, 'isGlobal': true});
+								}
+								starttimeSorted = timeAndId.sort(function(a, b) {return parseInt(a['starttime'], 10) - parseInt(b['starttime'], 10);})
+								console.log(starttimeSorted);
+								if (starttimeSorted.length == 0) {return;}
+								timeToClear = starttimeSorted[0]['starttime'];
+								console.log(timeToClear);
+								timeToNotify = timeToClear - 10;
+								classToNotify = starttimeSorted[0];
+								dateToNotify = newDate;
+								dateToNotify.setHours(0);
+								dateToNotify.setSeconds(0);
+								dateToNotify.setMilliseconds(0);
+								dateToNotify.setMinutes(timeToNotify);
+								nowTime = -(k * 1440)
+								
+							}
+
+							if (classToNotify['isGlobal']) {
+								classToNotify = globalSchedule.filter(function(a) {return a['id'] == classToNotify['id']})[0];
+							}
+							else {
+								classToNotify = schedule[day].filter(function(a) {return a['id'] == classToNotify['id']})[0];
+							}
+							
+							//timeouts.push(setTimeout(function() {cordova.plugins.notification.local.clearAll();}, 1000 * 60 * (timeToClear - nowTime)));
+
+							var bgcolor = setUpSettings.findClass(schoolClasses, classToNotify['className'], 'bgcolor');
+
+							console.log(dateToNotify);
+
+							var notiTitle = "Next class: " + setUpSettings.findClass(schoolClasses, classToNotify['className'], 'className') +
+								(setUpSettings.findClass(schoolClasses, classToNotify['className'], 'room') == "" ? "" : " (" + setUpSettings.findClass(schoolClasses, classToNotify['className'], 'room') + ")");
+							var notiText = "Starts in " + (timeToClear - timeToNotify).toString() + " minutes";
+
+							if (now.toDateString() != dateToNotify.toDateString()) {
+								notiText = notiTitle + " in 10";
+								notiTitle = "Today is day " + (parseInt(day) + 1).toString();
+							}
+
+							var scheduleObj = { 
+								id: 0,
+								title: notiTitle,
+								text: notiText,
+								at: dateToNotify,
+								led: (bgcolor == null ? "FFFFFF" : bgcolor.substr(1))
+							};
+							console.log(scheduleObj);
+							console.log(timeToClear);
+							console.log(timeToClear - nowTime);
+
+							/*if (thingo) {
+								scheduleObj['sound'] = xyz
+							}*/
+
+							cordova.plugins.notification.local.schedule(scheduleObj);
+							if (isInit && notify) {
+								navigator.notification.alert("Notifications have been turned on.");
+							}
+
+						}); //if its past all endtimes, do tomorrow
+					});
+				});
+			});
+		});
+	},
+
+	findClass: function(schoolClasses, schoolClassIDToFind, partToFind) {
+		for (var i = 0; i < schoolClasses.length; i++) {
+			if (schoolClasses[i]['id'] == schoolClassIDToFind) {
+				return schoolClasses[i][partToFind];
+			}
+		}
+	},
+
+	calculateDay: function(dateday, daysperweek, dateToFind) {
+		var daysBetween = 0;
+		var setDateO = new Date(dateday['date']);
+		var setDay = dateday['day'];
+
+		if (setDateO < dateToFind) { //set before datetofind, aka in the past
+			daysBetween = (dateConverter.newGBDC(setDateO, dateToFind) - 1);
+		} else {
+			daysBetween = -(dateConverter.newGBDC(dateToFind, setDateO)) + 1;
+		}
+
+		daysBetween += setDay;
+
+		daysBetween %= daysperweek;
+
+		if (daysBetween < 0) {
+			daysBetween += daysperweek;
+		}
+		return daysBetween;
+	},
+
+	handleSubmit: function() {
+		console.log('saving');
+
+		setUpSettings.verifyDay();
+		var twelveHourTime = $("#formtime")[0].checked;
+		var pushNotifications = $("#formnotifications")[0].checked;
+		var dateformat = $("#formselect").val();
+		var daysperweek = $("#formdays").val();
+		var currentDay = $("#formtoday").val();
+		var dark = +$("#formdark")[0].checked;
+		if (dark && $('#formdarkclasses')[0].checked) {
+			dark = 2;
+		}
+
+		localforage.setItem('twelveHourTime', twelveHourTime);
+		localforage.setItem('pushNotifications', pushNotifications);
+		localforage.setItem('dateformat', parseInt(dateformat));
+		localforage.setItem('daysperweek', parseInt(daysperweek));
+		localforage.setItem('currentDay', parseInt(currentDay));
+		localforage.setItem("themeDark", dark);
+		dateConverter.setDateDay("", parseInt(currentDay) - 1);
+
+		if (pushNotifications && !(setUpSettings.pushNotifications)) {
+			//turned on notifications
+			cordova.plugins.notification.local.cancelAll(function() {
+				setUpSettings.scheduleNextEventAndClear(null, true);
+			});
+		}
+		else if (!(pushNotifications) && setUpSettings.pushNotifications) {
+			//turned off notifications
+			cordova.plugins.notification.local.cancelAll(function() {
+				navigator.notification.alert("Notifications have been turned off.");
+			});
+		}
+		setUpSettings.twelveHourTime = twelveHourTime;
+		setUpSettings.pushNotifications = pushNotifications;
+		setUpSettings.dateformat = dateformat;
+		setUpSettings.daysperweek = daysperweek;
+		setUpSettings.themeDark = dark;
+		navigator.notification.alert("Settings saved.");
+
+	},
+	loadSettings: function() {
+		localforage.getItem('twelveHourTime').then(function(twelveHourTime) {
+			if (twelveHourTime == undefined) {
+				twelveHourTime = false;
+				localforage.setItem('twelveHourTime', twelveHourTime);
+			}
+			localforage.getItem('pushNotifications').then(function(pushNotifications) {
+				if (pushNotifications == undefined) {
+					pushNotifications = false;
+					localforage.setItem('pushNotifications', pushNotifications);
+				}
+				localforage.getItem('dateformat').then(function(dateformat) {
+					if (dateformat == undefined) {
+						dateformat = 0;
+						localforage.setItem('dateformat', dateformat);
+					}
+					localforage.getItem('daysperweek').then(function(daysperweek) {
+						if (daysperweek == undefined) {
+							daysperweek = 7;
+							localforage.setItem('daysperweek', daysperweek);
+						}
+						localforage.getItem('themeDark').then(function(dark) {
+							if (dark == undefined) {
+								dark = false;
+								localforage.setItem("themeDark", dark);
+							}
+							setUpSettings.twelveHourTime = twelveHourTime;
+							setUpSettings.pushNotifications = pushNotifications;
+							setUpSettings.dateformat = dateformat;
+							setUpSettings.daysperweek = daysperweek;
+							setUpSettings.ready = true;
+							setUpSettings.themeDark = dark;
+						});
+
+						
+
+					});
+				});
+			});
+		});
+	},
+	checkDateRan: function() {
+		if (dateConverter.firstTime) {
+			setTimeout(setUpSettings.checkDateRan, 10);
+			return;
+		}
+
+		var toAdd = 1;
+		if (new Date().getDay() == 6 || new Date().getDay() == 0) {
+			toAdd = 2;
+		}
+
+		$("#formtoday").val(dateConverter.firstDay + toAdd);
+		setUpSettings.verifyToday();
+		setUpSettings.day = dateConverter.firstDay;
+	}
+
+}

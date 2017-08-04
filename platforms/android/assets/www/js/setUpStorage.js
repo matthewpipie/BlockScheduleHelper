@@ -16,4 +16,74 @@
  *
  * Contact the creator (Matthew Giordano) at matthewpipie@gmail.com.
  */
-var setUpStorage={storage:!1,pagecontainerbeforeshow:function(){},deviceready:function(){localforage.defineDriver(window.cordovaSQLiteDriver).then(function(){return localforage.setDriver([window.cordovaSQLiteDriver._driver,localforage.INDEXEDDB,localforage.WEBSQL,localforage.LOCALSTORAGE])}).then(function(){storage=!0,localforage.getItem("themeDark").then(function(a){void 0==a&&(a=0,localforage.setItem("themeDark",a)),a>0&&($("body").addClass("themeDark"),2==a&&$("body").addClass("invertClasses"))}),cordova.plugins.notification.local.on("trigger",function(a,b){console.log("triggered :O"),console.log(b),setUpSettings.scheduleNextEventAndClear(a,!1)}),localforage.getItem("pushNotifications").then(function(a){void 0==a&&(a=!1,localforage.setItem("pushNotifications",a)),0!=a&&cordova.plugins.notification.local.getAllIds(function(a){a.length||localforage.getItem("schedule").then(function(a){for(var b=!0,c=0;c<a.length;c++)if(a[c].length){b=!1;break}b||cordova.plugins.notification.local.cancelAll(function(){setUpSettings.scheduleNextEventAndClear(null,!0,!1)})})})}),app.mainSetUp()})}};
+
+ var setUpStorage = {
+
+	storage: false,
+
+	pagecontainerbeforeshow: function() {},
+
+	deviceready: function() {
+		localforage.defineDriver(window.cordovaSQLiteDriver).then(function() {
+			return localforage.setDriver([
+					// Try setting cordovaSQLiteDriver if available,
+				window.cordovaSQLiteDriver._driver,
+					// otherwise use one of the default localforage drivers as a fallback.
+					// This should allow you to transparently do your tests in a browser
+				localforage.INDEXEDDB,
+				localforage.WEBSQL,
+				localforage.LOCALSTORAGE
+			]);
+		}).then(function() {
+	  // this should alert "cordovaSQLiteDriver" when in an emulator or a device
+			//alert(localforage.driver());
+			storage = true;
+			
+			localforage.getItem("themeDark").then(function(dark) {
+				if (dark == undefined) {
+					dark = 0;
+					localforage.setItem("themeDark", dark);
+				}
+				if (dark > 0) {
+					$("body").addClass("themeDark");
+					if (dark == 2) {
+						$("body").addClass("invertClasses");
+					}
+				}
+			});
+
+			cordova.plugins.notification.local.on('trigger', function(noti, str) {console.log("triggered :O"); console.log(str); setUpSettings.scheduleNextEventAndClear(noti, false)});
+			localforage.getItem('pushNotifications').then(function(val) {
+				if (val == undefined) {
+					val = false;
+					localforage.setItem('pushNotifications', val);
+				}
+				if (val == false) {
+					return;
+				}
+				cordova.plugins.notification.local.getAllIds(function (ids) {
+					if (ids.length) {
+						return;
+					}
+					localforage.getItem("schedule").then(function(val) {
+						var scheduleContainsNothing = true;
+						for (var a = 0; a < val.length; a++) {
+							if (val[a].length) {
+								scheduleContainsNothing = false;
+								break;
+							}
+						}
+						if (scheduleContainsNothing) {
+							return;
+						}
+						cordova.plugins.notification.local.cancelAll(function() {
+							setUpSettings.scheduleNextEventAndClear(null, true, false);
+						});
+					});
+				});
+			});
+
+			app.mainSetUp();
+		});
+	}
+};

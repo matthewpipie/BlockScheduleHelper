@@ -1,0 +1,27 @@
+{
+    "name": "net.ddns.matthewpipie.blockscheduleappt",
+    "version": "2.4.0",
+    "displayName": "Block Schedule HelperT",
+    "cordova": {
+        "platforms": [
+            "android",
+            "ios"
+        ],
+        "plugins": {
+            "cordova-plugin-dialogs": {},
+            "cordova-plugin-statusbar": {},
+            "cordova-plugin-whitelist": {},
+            "cordova-sqlite-storage": {},
+            "de.appplant.cordova.plugin.local-notification": {}
+        }
+    },
+    "dependencies": {
+        "cordova-android": "~5.2.1",
+        "cordova-ios": "~4.2.1",
+        "cordova-plugin-dialogs": "~1.2.1",
+        "cordova-plugin-statusbar": "~2.1.3",
+        "cordova-plugin-whitelist": "1",
+        "cordova-sqlite-storage": "https://github.com/litehelpers/Cordova-sqlite-storage.git",
+        "de.appplant.cordova.plugin.local-notification": "https://github.com/EddyVerbruggen/cordova-plugin-local-notifications"
+    }
+}
